@@ -1,0 +1,6 @@
+.vscode/*
+output/*
+tohsaka.log
+**/*.pyc
+.coverage
+htmlcov/*
