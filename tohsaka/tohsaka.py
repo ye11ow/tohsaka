@@ -1,7 +1,6 @@
 import sys
 import argparse
 import importlib.util
-from urllib.parse import urlparse
 import os, json
 
 from utils import log_util
@@ -21,6 +20,7 @@ class Tohsaka:
         logger.info('Tohsaka start!')
 
         self.load_mystic_code(mystic_code)
+        self.load_outputter()
 
 
     def load_mystic_code(self, mystic_code):
@@ -38,23 +38,33 @@ class Tohsaka:
             raise Exception('Mystic code not found')
 
         # load spell
-        if os.path.isfile(os.path.join(self.MYSTIC_BASE_PATH, mystic_code, 'spell.py')):
-            try:
-                spec = importlib.util.spec_from_file_location("Spell", os.path.join(self.MYSTIC_BASE_PATH, mystic_code, 'spell.py'))
-                foo = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(foo)
+        spell_type = self.config.get('spell').get('type')
+        if spell_type == 'Custom':
 
-                self.spell = foo.Spell(self.config)
-            except:
-                logger.error('Failed to import the spell for mystic code (%s)' % (mystic_code))
-                raise Exception('Failed to import spell')
+            if os.path.isfile(os.path.join(self.MYSTIC_BASE_PATH, mystic_code, 'spell.py')):
+                try:
+                    spec = importlib.util.spec_from_file_location("Spell", os.path.join(self.MYSTIC_BASE_PATH, mystic_code, 'spell.py'))
+                    foo = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(foo)
+
+                    self.spell = foo.Spell(self.config.get('spell').get('options'))
+                except:
+                    logger.error('Failed to import the spell for mystic code (%s)' % (mystic_code))
+                    raise Exception('Failed to import spell')
+        else:
+            raise Exception('Spell type %s is not implemented' % spell_type)
+
+
+    def load_outputter(self):
+        outputter_type = self.config.get('outputter').get('type')
+
+        if outputter_type == 'RSS':
+            self.outputter = Outputter(self.config.get('outputter').get('options'))
+        else:
+            raise Exception('Outputter type %s is not implemented' % outputter_type)
 
 
     def go(self):
-        urlresult = urlparse(self.config.get('entry'))
-        host = urlresult.scheme + '://' + urlresult.netloc
-
-        outputter = Outputter(base_link=host, title=self.config.get('id'), description='Little secret', file=self.config.get('id')+'.xml')
         qualifier = Qualifier(self.config)
 
         item_count = 0
@@ -75,6 +85,6 @@ class Tohsaka:
                 filtered_count += 1
                 continue
 
-            outputter.go(item)
+            self.outputter.go(item)
 
-        outputter.done()
+        self.outputter.done()

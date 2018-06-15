@@ -34,17 +34,3 @@ class Qualifier:
 
     def go(self, item):
         return self._qualify(item)
-
-
-
-# if __name__ == '__main__':
-#     fields = {
-#         "link": "hello",
-#         "title": "word",
-#         "pubdate": "2017-03-12",
-#         "replies": "20",
-#         "author": "me"
-#     }
-
-#     tohsaka_qualifier = Qualifier()
-#     tohsaka_qualifier.start(fields)

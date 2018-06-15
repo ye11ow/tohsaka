@@ -79,9 +79,6 @@ class BaseForumSpell(Spell):
             addition = self.get_addition(r.html)
         except:
             logger.warn('failed to process url ' + r.html.url)
-            Html_file= open("debug.html","w")
-            Html_file.write(r.html.html)
-            Html_file.close()
             return {}
 
         try:

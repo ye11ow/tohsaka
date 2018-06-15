@@ -6,13 +6,13 @@ REQUIRED_FIELDS = ['description', 'pubDate', 'title']
 
 class Outputter(object):
 
-    def __init__(self, base_link, title='test', file='output.xml', description='Sample'):
-        self.file = file
+    def __init__(self, config):
+        self.file = config.get('filename', 'output') + '.xml'
         folder = os.path.join(os.getcwd(), 'output')
         self.output_path = os.path.join(folder, self.file)
-        self.title = title
-        self.description = description
-        self.base_link = base_link
+        self.title = config.get('title', 'Sample RSS')
+        self.description = config.get('description', 'Sample')
+        self.base_link = config.get('host')
 
         if not os.path.isdir(folder):
             os.mkdir(folder)
@@ -62,15 +62,3 @@ class Outputter(object):
             return self._output(item)
         else :
             return False
-
-
-
-# if __name__ == '__main__':
-#     fields = {
-#         "link": "hello",
-#         "title": "word",
-#         "pubDate": "2017-03-12"
-#     }
-
-#     outputter = Outputter()
-#     print outputter.start(fields)
