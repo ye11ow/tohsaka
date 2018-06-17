@@ -1,9 +1,6 @@
 language: python
+cache: pip
 python:
   - "3.6"
-# command to install dependencies
 install: "pip install -r requirements.txt"
-# command to run tests
 script: py.test --cov=tohsaka --cov-report html --cov-report term
-# code coverage
-after_sucess: CODECLIMATE_REPO_TOKEN=<codeclimatetoken> codeclimate-test-reporter
