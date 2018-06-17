@@ -1,7 +1,4 @@
 from requests_html import HTMLSession
-from dateutil import parser
-from datetime import datetime
-import pytz
 from tohsaka.spells.base_spell import Spell
 from utils import log_util
 
@@ -80,11 +77,6 @@ class BaseForumSpell(Spell):
         except:
             logger.warn('failed to process url ' + r.html.url)
             return {}
-
-        try:
-            pubDate = parser.parse(pubDate).replace(tzinfo=pytz.timezone('Asia/Shanghai'))
-        except:
-            pubDate = datetime.now(pytz.utc).isoformat()
 
         response = {
             'link': link,

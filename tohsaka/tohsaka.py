@@ -5,7 +5,6 @@ import os, json
 
 from utils import log_util
 from tohsaka.qualifiers.qualifier import Qualifier
-from tohsaka.outputters.rss_outputter import Outputter
 
 logger = log_util.get_logger('tohsaka')
 
@@ -59,9 +58,13 @@ class Tohsaka:
         outputter_type = self.config.get('outputter').get('type')
 
         if outputter_type == 'RSS':
-            self.outputter = Outputter(self.config.get('outputter').get('options'))
+            from tohsaka.outputters.rss_outputter import Outputter
+        elif outputter_type == 'JSON':
+            from tohsaka.outputters.json_outputter import Outputter
         else:
             raise Exception('Outputter type %s is not implemented' % outputter_type)
+
+        self.outputter = Outputter(self.config.get('outputter').get('options'))
 
 
     def go(self):
