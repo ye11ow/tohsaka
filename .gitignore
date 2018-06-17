@@ -4,3 +4,4 @@ tohsaka.log
 **/*.pyc
 .coverage
 htmlcov/*
+tohsaka/mystic/**/*.*
