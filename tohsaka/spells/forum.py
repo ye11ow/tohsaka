@@ -10,22 +10,28 @@ class Spell(BaseSpell):
     def __init__(self, config):
         BaseSpell.__init__(self, config)
 
+
     @classmethod
     def name(self):
         return 'Forum'
+
 
     @classmethod
     def intro(self):
         return 'Get forum-like data'
 
+
     def get_date(self, element):
         return element.text
+
 
     def get_description(self, element):
         return element.html
 
+
     def get_addition(self, html):
         return None
+
 
     def _go_page(self, url):
         session = HTMLSession()
@@ -41,8 +47,8 @@ class Spell(BaseSpell):
 
         for item in items:
             response = self.process_item(item)
-
             yield response
+
 
     def go(self):
         page_param = self._config.get('page_param', None)
@@ -58,10 +64,11 @@ class Spell(BaseSpell):
                 for item in results:
                     yield item
         else:
-            results = self._go_page(page_url)
+            results = self._go_page(self._config.get('entry'))
 
         for item in results:
             yield item
+
 
     def process_item(self, item):
         if len(item.absolute_links) != 1:
