@@ -4,3 +4,4 @@ feedgen == 0.7.0
 pytz == 2018.4
 coverage == 4.4
 pytest-cov == 2.5.0
+requests == 2.19.1

@@ -1,6 +1,7 @@
 import sys
 import argparse
 import importlib.util
+from glob import glob
 import os, json
 
 from utils import log_util
@@ -14,6 +15,34 @@ class Tohsaka:
     item_per_log = 10
 
     MYSTIC_BASE_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'mystic')
+    SPELL_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'spells')
+
+
+    @classmethod
+    def list_spells(cls):
+        spells = []
+
+        for spell_file in glob(os.path.join(cls.SPELL_PATH, '*.py')):
+            spec = importlib.util.spec_from_file_location('Spell', spell_file)
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+
+            if not hasattr(mod, 'Spell'):
+                continue
+
+            spells.append({
+                'name': mod.Spell.name(),
+                'intro': mod.Spell.intro(),
+            })
+
+        if len(spells) == 0:
+            print('No spells found...')
+            return
+
+        print('%d spells found...' % len(spells))
+        for spell in spells:
+            print('%s: %s' % (spell['name'], spell['intro']))
+
 
     def __init__(self, mystic_code):
         logger.info('Tohsaka start!')
@@ -39,17 +68,19 @@ class Tohsaka:
         # load spell
         spell_type = self.config.get('spell').get('type')
         if spell_type == 'Custom':
-
             if os.path.isfile(os.path.join(self.MYSTIC_BASE_PATH, mystic_code, 'spell.py')):
                 try:
-                    spec = importlib.util.spec_from_file_location("Spell", os.path.join(self.MYSTIC_BASE_PATH, mystic_code, 'spell.py'))
-                    foo = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(foo)
+                    spec = importlib.util.spec_from_file_location('Spell', os.path.join(self.MYSTIC_BASE_PATH, mystic_code, 'spell.py'))
+                    mod = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(mod)
 
-                    self.spell = foo.Spell(self.config.get('spell').get('options'))
+                    self.spell = mod.Spell(self.config.get('spell').get('options'))
                 except:
                     logger.error('Failed to import the spell for mystic code (%s)' % (mystic_code))
                     raise Exception('Failed to import spell')
+        elif spell_type == 'Rest':
+            from tohsaka.spells.rest import Spell
+            self.spell = Spell(self.config.get('spell').get('options'))
         else:
             raise Exception('Spell type %s is not implemented' % spell_type)
 

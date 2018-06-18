@@ -1,18 +1,18 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
 
-class Spell(metaclass=ABCMeta):
+class BaseSpell(metaclass=ABCMeta):
 
     def __init__(self, config):
         self._config = config
         pass
 
-    @property
-    @abstractproperty
+    @classmethod
+    @abstractmethod
     def name(self):
         pass
 
-    @property
-    @abstractproperty
+    @classmethod
+    @abstractmethod
     def intro(self):
         pass
 

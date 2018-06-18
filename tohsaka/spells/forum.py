@@ -1,20 +1,20 @@
 from requests_html import HTMLSession
-from tohsaka.spells.base_spell import Spell
+from tohsaka.spells.base_spell import BaseSpell
 from utils import log_util
 
 logger = log_util.get_logger('tohsaka')
 
 
-class BaseForumSpell(Spell):
+class Spell(BaseSpell):
 
     def __init__(self, config):
-        Spell.__init__(self, config)
+        BaseSpell.__init__(self, config)
 
-    @property
+    @classmethod
     def name(self):
         return 'Forum'
 
-    @property
+    @classmethod
     def intro(self):
         return 'Get forum-like data'
 
@@ -30,6 +30,10 @@ class BaseForumSpell(Spell):
     def _go_page(self, url):
         session = HTMLSession()
         r = session.get(url)
+
+        if r.status_code != 200:
+            logger.warn('Error when fetching url %s, with response code %d' % (url, r.status_code))
+            return
 
         items = r.html.find(self._config.get('itemListSelector'))
 
