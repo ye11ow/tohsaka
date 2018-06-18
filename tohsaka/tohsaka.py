@@ -37,11 +37,13 @@ class Tohsaka:
 
         if len(spells) == 0:
             print('No spells found...')
-            return
+            return []
 
         print('%d spells found...' % len(spells))
         for spell in spells:
             print('%s: %s' % (spell['name'], spell['intro']))
+
+        return spells
 
 
     def __init__(self, mystic_code):
