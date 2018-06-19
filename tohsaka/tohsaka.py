@@ -16,6 +16,7 @@ class Tohsaka:
 
     MYSTIC_BASE_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'mystic')
     SPELL_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'spells')
+    OUTPUTTER_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'outputters')
 
 
     @classmethod
@@ -50,6 +51,7 @@ class Tohsaka:
         logger.info('Tohsaka start!')
 
         self.load_mystic_code(mystic_code)
+        logger.info('Loadded Mystic Code %s' % mystic_code)
         self.load_outputter()
 
 
@@ -69,35 +71,37 @@ class Tohsaka:
 
         # load spell
         spell_type = self.config.get('spell').get('type')
-        if spell_type == 'Custom':
-            if os.path.isfile(os.path.join(self.MYSTIC_BASE_PATH, mystic_code, 'spell.py')):
-                try:
-                    spec = importlib.util.spec_from_file_location('Spell', os.path.join(self.MYSTIC_BASE_PATH, mystic_code, 'spell.py'))
-                    mod = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(mod)
 
-                    self.spell = mod.Spell(self.config.get('spell').get('options'))
-                except:
-                    logger.error('Failed to import the spell for mystic code (%s)' % (mystic_code))
-                    raise Exception('Failed to import spell')
-        elif spell_type == 'Rest':
-            from tohsaka.spells.rest import Spell
-            self.spell = Spell(self.config.get('spell').get('options'))
+        if spell_type == 'Custom':
+            module_path = os.path.join(self.MYSTIC_BASE_PATH, mystic_code, 'spell.py')
         else:
-            raise Exception('Spell type %s is not implemented' % spell_type)
+            module_path = os.path.join(self.SPELL_PATH, '%s.py' % spell_type.lower())
+
+        try:
+            spec = importlib.util.spec_from_file_location('Spell', module_path)
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+
+            self.spell = mod.Spell(self.config.get('spell').get('options'))
+        except:
+            logger.error('Failed to import the spell from %s' % (module_path))
+            raise Exception('Failed to import spell')
 
 
     def load_outputter(self):
         outputter_type = self.config.get('outputter').get('type')
 
-        if outputter_type == 'RSS':
-            from tohsaka.outputters.rss_outputter import Outputter
-        elif outputter_type == 'JSON':
-            from tohsaka.outputters.json_outputter import Outputter
-        else:
-            raise Exception('Outputter type %s is not implemented' % outputter_type)
+        module_path = os.path.join(self.OUTPUTTER_PATH, '%s.py' % outputter_type.lower())
 
-        self.outputter = Outputter(self.config.get('outputter').get('options'))
+        try:
+            spec = importlib.util.spec_from_file_location('Outputter', module_path)
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+
+            self.outputter = mod.Outputter(self.config.get('outputter').get('options'))
+        except:
+            logger.error('Failed to import the outputter from %s' % (module_path))
+            raise Exception('Failed to import outputter')
 
 
     def go(self):
