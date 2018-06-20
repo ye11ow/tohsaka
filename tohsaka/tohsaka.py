@@ -52,6 +52,7 @@ class Tohsaka:
 
         self.load_mystic_code(mystic_code)
         logger.info('Loadded Mystic Code %s' % mystic_code)
+        self.load_spell(mystic_code)
         self.load_outputter()
 
 
@@ -69,7 +70,8 @@ class Tohsaka:
             logger.error('Please check whether "%s" exists' % (filepath))
             raise Exception('Mystic code not found')
 
-        # load spell
+
+    def load_spell(self, mystic_code):
         spell_type = self.config.get('spell').get('type')
 
         if spell_type == 'Custom':
@@ -112,7 +114,7 @@ class Tohsaka:
         filtered_count = 0
 
         for item in self.spell.go():
-            if item_count > 0 and item_count % 10 == 0:
+            if item_count > 0 and item_count % self.item_per_log == 0:
                 logger.info('%d item processed. Success %d, failure %d, filtered %d.' % (item_count, item_count - failed_count - filtered_count, failed_count, filtered_count))
 
             item_count += 1
