@@ -51,7 +51,7 @@ class Tohsaka:
         logger.info('Tohsaka start!')
 
         self.load_mystic_code(mystic_code)
-        logger.info('Loadded Mystic Code %s' % mystic_code)
+        logger.info('Loaded Mystic Code %s' % mystic_code)
         self.load_spell(mystic_code)
         self.load_outputter()
 
@@ -113,6 +113,8 @@ class Tohsaka:
         failed_count = 0
         filtered_count = 0
 
+        logger.info('Tohsaka GO!')
+
         for item in self.spell.go():
             if item_count > 0 and item_count % self.item_per_log == 0:
                 logger.info('%d item processed. Success %d, failure %d, filtered %d.' % (item_count, item_count - failed_count - filtered_count, failed_count, filtered_count))
@@ -128,5 +130,8 @@ class Tohsaka:
                 continue
 
             self.outputter.go(item)
+
+        logger.info('GO Tohsaka!')
+        logger.info('%d item processed. Success %d, failure %d, filtered %d.' % (item_count, item_count - failed_count - filtered_count, failed_count, filtered_count))
 
         self.outputter.done()
