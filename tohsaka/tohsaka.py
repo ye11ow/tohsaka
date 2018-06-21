@@ -47,13 +47,13 @@ class Tohsaka:
         return spells
 
 
-    def __init__(self, mystic_code):
+    def __init__(self, mystic_code, params):
         logger.info('Tohsaka start!')
 
         self.load_mystic_code(mystic_code)
         logger.info('Loaded Mystic Code %s' % mystic_code)
-        self.load_spell(mystic_code)
-        self.load_outputter()
+        self.load_spell(mystic_code, params)
+        self.load_outputter(params)
 
 
     def load_mystic_code(self, mystic_code):
@@ -71,7 +71,7 @@ class Tohsaka:
             raise Exception('Mystic code not found')
 
 
-    def load_spell(self, mystic_code):
+    def load_spell(self, mystic_code, params):
         spell_type = self.config.get('spell').get('type')
 
         if spell_type == 'Custom':
@@ -84,13 +84,13 @@ class Tohsaka:
             mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)
 
-            self.spell = mod.Spell(self.config.get('spell').get('options'))
+            self.spell = mod.Spell(self.config.get('spell').get('options'), params)
         except:
             logger.error('Failed to import the spell from %s' % (module_path))
             raise Exception('Failed to import spell')
 
 
-    def load_outputter(self):
+    def load_outputter(self, params):
         outputter_type = self.config.get('outputter').get('type')
 
         module_path = os.path.join(self.OUTPUTTER_PATH, '%s.py' % outputter_type.lower())
@@ -100,7 +100,7 @@ class Tohsaka:
             mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)
 
-            self.outputter = mod.Outputter(self.config.get('outputter').get('options'))
+            self.outputter = mod.Outputter(self.config.get('outputter').get('options'), params)
         except:
             logger.error('Failed to import the outputter from %s' % (module_path))
             raise Exception('Failed to import outputter')

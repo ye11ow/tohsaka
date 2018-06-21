@@ -14,7 +14,9 @@ class Outputter(BaseOutputter):
         return ['description', 'pubDate', 'title']
 
 
-    def __init__(self, config):
+    def __init__(self, config, params):
+        BaseOutputter.__init__(self, config, params)
+
         self.file = config.get('filename', 'output') + '.xml'
         folder = os.path.join(os.getcwd(), 'output')
         self.output_path = os.path.join(folder, self.file)

@@ -7,8 +7,8 @@ logger = log_util.get_logger('Rest')
 
 class Spell(BaseSpell):
 
-    def __init__(self, config):
-        BaseSpell.__init__(self, config)
+    def __init__(self, config, params):
+        BaseSpell.__init__(self, config, params)
 
     @classmethod
     def name(self):
@@ -19,7 +19,7 @@ class Spell(BaseSpell):
         return 'Get REST data'
 
     def go(self):
-        endpoint = self._config.get('endpoint')
+        endpoint = self.config.get('endpoint')
         r = requests.get(endpoint)
 
         if r.status_code == 200:

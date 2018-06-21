@@ -20,14 +20,14 @@ class TestTohsaka:
     ])
     @patch('tohsaka.tohsaka.Tohsaka.__init__', return_value=None)
     def test_load_spell(self, __init__, spell_type):
-        tohsaka = Tohsaka('test')
+        tohsaka = Tohsaka('test', {})
         tohsaka.config = {
             'spell': {
                 'type': spell_type,
                 'options': {}
             }
         }
-        tohsaka.load_spell('test')
+        tohsaka.load_spell('test', {})
 
         assert callable(tohsaka.spell.go)
 
@@ -37,13 +37,13 @@ class TestTohsaka:
     ])
     @patch('tohsaka.tohsaka.Tohsaka.__init__', return_value=None)
     def test_load_outputter(self, __init__, outputter_type):
-        tohsaka = Tohsaka('test')
+        tohsaka = Tohsaka('test', {})
         tohsaka.config = {
             'outputter': {
                 'type': outputter_type,
                 'options': {}
             }
         }
-        tohsaka.load_outputter()
+        tohsaka.load_outputter({})
 
         assert callable(tohsaka.outputter.go)

@@ -10,7 +10,9 @@ class Outputter(BaseOutputter):
         return []
 
 
-    def __init__(self, config):
+    def __init__(self, config, params):
+        BaseOutputter.__init__(self, config, params)
+
         self.file = config.get('filename', 'output') + '.json'
         folder = os.path.join(os.getcwd(), 'output')
         self.output_path = os.path.join(folder, self.file)
