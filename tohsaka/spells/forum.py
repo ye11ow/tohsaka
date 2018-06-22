@@ -8,8 +8,8 @@ logger = log_util.get_logger('tohsaka')
 
 class Spell(BaseSpell):
 
-    def __init__(self, config, params):
-        BaseSpell.__init__(self, config, params)
+    def __init__(self, config):
+        BaseSpell.__init__(self, config)
 
 
     @classmethod

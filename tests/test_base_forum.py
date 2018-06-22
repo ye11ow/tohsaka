@@ -47,7 +47,7 @@ class TestForum:
 
         spell = Spell({
             'itemListSelector': '#unselect'
-        }, {})
+        })
         result = spell._go_page('test_url')
 
         for item in result:
@@ -60,7 +60,7 @@ class TestForum:
     def test_go_page_failed_response(self, HTMLSession):
         HTMLSession.return_value.get.return_value = DummyResponse('', 404)
 
-        spell = Spell({}, {})
+        spell = Spell({})
 
         result = spell._go_page('test_url')
 
@@ -77,7 +77,7 @@ class TestForum:
             'titleSelector': '.title',
             'dateSelector': '.date',
             'contentSelector': '.description'
-        }, {})
+        })
 
         item = MagicMock()
         item.absolute_links = ['test']
@@ -98,7 +98,7 @@ class TestForum:
             'titleSelector': '.wrongtitle',
             'dateSelector': '.wrongdate',
             'contentSelector': '.wrongdescription'
-        }, {})
+        })
 
         item = MagicMock()
         item.absolute_links = ['test']
@@ -111,7 +111,7 @@ class TestForum:
         item = MagicMock()
         item.absolute_links = ['test', 'lin']
 
-        spell = Spell({}, {})
+        spell = Spell({})
         result = spell.process_item(item)
 
         assert result == None
@@ -121,7 +121,7 @@ class TestForum:
     def test_go_single_page(self, _go_page):
         spell = Spell({
             'entry': 'http://localhost/index'
-        }, {})
+        })
 
         result = spell.go()
 
@@ -137,7 +137,7 @@ class TestForum:
             'entry': 'http://localhost/index',
             'page_param': 'page',
             'pages': PAGES
-        }, {})
+        })
 
         result = spell.go()
 

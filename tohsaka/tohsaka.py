@@ -84,7 +84,9 @@ class Tohsaka:
             mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)
 
-            self.spell = mod.Spell(self.config.get('spell').get('options'), params)
+            self._replace_params(self.config['spell']['options'], params)
+
+            self.spell = mod.Spell(self.config.get('spell').get('options'))
         except:
             logger.error('Failed to import the spell from %s' % (module_path))
             raise Exception('Failed to import spell')
@@ -100,11 +102,21 @@ class Tohsaka:
             mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)
 
-            self.outputter = mod.Outputter(self.config.get('outputter').get('options'), params)
+            self._replace_params(self.config['outputter']['options'], params)
+
+            self.outputter = mod.Outputter(self.config.get('outputter').get('options'))
         except:
             logger.error('Failed to import the outputter from %s' % (module_path))
             raise Exception('Failed to import outputter')
 
+    def _replace_params(self, options, params):
+        for key in options:
+            value = options[key]
+            if type(value) == str:
+                for param in params:
+                    value = value.replace('<<%s>>' % param, params[param])
+
+                options[key] = value
 
     def go(self):
         qualifier = Qualifier(self.config)
