@@ -5,6 +5,20 @@ from tohsaka.tohsaka import Tohsaka
 
 class TestTohsaka:
 
+    BASE_PARAMS = {
+        'params': {
+            'key1': {
+                'required': True
+            },
+            'key2': {
+                'required': False
+            },
+            'key3': {
+                'required': True
+            },
+        }
+    }
+
     def test_list_spells(self):
         spells = Tohsaka.list_spells()
 
@@ -65,7 +79,8 @@ class TestTohsaka:
 
         tohsaka._replace_params(tohsaka.config['spell']['options'], {
             'param1': '1marap',
-            'param2': '2marap'
+            'param2': '2marap',
+            'param3': '3marap'
         })
 
         options = tohsaka.config.get('spell').get('options')
@@ -74,3 +89,50 @@ class TestTohsaka:
         assert options.get('config2') == '1marap'
         assert options.get('config3') == '2marap123'
         assert options.get('config4') == '1marap4562marap'
+
+
+    @patch('tohsaka.tohsaka.Tohsaka.__init__', return_value=None)
+    def test_validate_params(self, __init__):
+        tohsaka = Tohsaka('test', {})
+        tohsaka.config = self.BASE_PARAMS
+
+        result1 = tohsaka._validate_params({
+            'key1': '1',
+            'key2': '2',
+            'key3': '3'
+        })
+
+        result2 = tohsaka._validate_params({
+            'key1': '1',
+            'key3': '3'
+        })
+
+        result3 = tohsaka._validate_params({
+            'key1': False,
+            'key2': '2',
+            'key3': 0
+        })
+
+        assert (result1 & result2 & result3)
+
+
+    @patch('tohsaka.tohsaka.Tohsaka.__init__', return_value=None)
+    def test_validate_params_invalid(self, __init__):
+        tohsaka = Tohsaka('test', {})
+        tohsaka.config = self.BASE_PARAMS
+
+        with pytest.raises(Exception):
+            tohsaka._validate_params({
+                'key2': '2',
+                'key3': '3'
+            })
+
+        with pytest.raises(Exception):
+            tohsaka._validate_params({
+                'key2': '1'
+            })
+
+        with pytest.raises(Exception):
+            tohsaka._validate_params({
+                'key4': 0
+            })

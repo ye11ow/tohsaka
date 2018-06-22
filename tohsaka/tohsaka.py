@@ -52,6 +52,9 @@ class Tohsaka:
 
         self.load_mystic_code(mystic_code)
         logger.info('Loaded Mystic Code %s' % mystic_code)
+
+        self._validate_params(params)
+
         self.load_spell(mystic_code, params)
         self.load_outputter(params)
 
@@ -108,6 +111,20 @@ class Tohsaka:
         except:
             logger.error('Failed to import the outputter from %s' % (module_path))
             raise Exception('Failed to import outputter')
+
+
+    def _validate_params(self, params):
+        defined_params = self.config.get('params', {})
+        for key in defined_params:
+            # if `required==False` or `required` field does not exist.
+            if not defined_params.get(key).get('required'):
+                continue
+
+            if not key in params:
+                raise Exception('Required parameter %s does not exist. Current params %s' % (key, ', '.join(params.keys()) ))
+
+        return True
+
 
     def _replace_params(self, options, params):
         for key in options:
