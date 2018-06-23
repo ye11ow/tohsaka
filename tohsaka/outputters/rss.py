@@ -9,6 +9,8 @@ from tohsaka.outputters.base_outputter import BaseOutputter
 
 class Outputter(BaseOutputter):
 
+    OUTPUT_FOLDER = os.path.join(os.getcwd(), 'output')
+
     @property
     def REQUIRED_FIELDS(self):
         return ['description', 'pubDate', 'title']
@@ -18,14 +20,10 @@ class Outputter(BaseOutputter):
         BaseOutputter.__init__(self, config)
 
         self.file = config.get('filename', 'output') + '.xml'
-        folder = os.path.join(os.getcwd(), 'output')
-        self.output_path = os.path.join(folder, self.file)
+        self.output_path = os.path.join(self.OUTPUT_FOLDER, self.file)
         self.title = config.get('title', 'Sample RSS')
         self.description = config.get('description', 'Sample')
         self.base_link = config.get('host')
-
-        if not os.path.isdir(folder):
-            os.mkdir(folder)
 
         self.fg = FeedGenerator()
         self._create_feed()
@@ -40,11 +38,19 @@ class Outputter(BaseOutputter):
         fg.description(self.description)
         fg.author(name='Tohsaka')
 
-        fg.atom_file(self.output_path)
-        return
+    def done(self):
+        if not os.path.isdir(self.OUTPUT_FOLDER):
+            os.mkdir(self.OUTPUT_FOLDER)
+
+        self.fg.atom_file(self.output_path)
 
 
-    def _add_entry(self, title, description, link, pubDate):
+    def _output(self, item):
+        title = item.get('title')
+        description = item.get('description')
+        link = item.get('link')
+        pubDate = item.get('pubDate')
+
         fe = self.fg.add_entry()
 
         fe.title(title)
@@ -57,11 +63,3 @@ class Outputter(BaseOutputter):
             pubDate = datetime.now(pytz.utc).isoformat()
         fe.pubDate(pubDate)
         fe.updated(pubDate)
-
-
-    def done(self):
-        self.fg.atom_file(self.output_path)
-
-
-    def _output(self, item):
-        self._add_entry(item['title'], item['description'], item['link'], item['pubDate'])
