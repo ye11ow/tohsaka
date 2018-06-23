@@ -41,8 +41,9 @@ class TestTohsaka:
                 'options': {}
             }
         }
-        tohsaka.load_spell('test', {})
+        tohsaka.spell = tohsaka._load_module('Spell', 'test', tohsaka.SPELL_PATH, {})
 
+        assert hasattr(tohsaka, 'spell')
         assert callable(tohsaka.spell.go)
 
 
@@ -58,8 +59,10 @@ class TestTohsaka:
                 'options': {}
             }
         }
-        tohsaka.load_outputter({})
 
+        tohsaka.outputter = tohsaka._load_module('Outputter', 'test', tohsaka.OUTPUTTER_PATH, {})
+
+        assert hasattr(tohsaka, 'outputter')
         assert callable(tohsaka.outputter.go)
 
     @patch('tohsaka.tohsaka.Tohsaka.__init__', return_value=None)

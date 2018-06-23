@@ -55,8 +55,8 @@ class Tohsaka:
 
         self._validate_params(params)
 
-        self.load_spell(mystic_code, params)
-        self.load_outputter(params)
+        self.spell = self._load_module('Spell', mystic_code, self.SPELL_PATH, params)
+        self.outputter = self._load_module('Outputter', mystic_code, self.OUTPUTTER_PATH, params)
 
 
     def load_mystic_code(self, mystic_code):
@@ -69,48 +69,32 @@ class Tohsaka:
 
             self.config = mystic_json
         except:
-            logger.error('Failed to load mystic code (%s)' % (mystic_code))
-            logger.error('Please check whether "%s" exists' % (filepath))
+            logger.error('Failed to load mystic code %s. Please check whether "%s" exists' % (mystic_code, filepath))
             raise Exception('Mystic code not found')
 
 
-    def load_spell(self, mystic_code, params):
-        spell_type = self.config.get('spell').get('type')
+    def _load_module(self, module_name, mystic_code, base_path, params):
+        lower_name = module_name.lower()
+        module_type = self.config.get(lower_name).get('type')
 
-        if spell_type == 'Custom':
-            module_path = os.path.join(self.MYSTIC_BASE_PATH, mystic_code, 'spell.py')
+        if module_type == 'Custom':
+            module_path = os.path.join(self.MYSTIC_BASE_PATH, mystic_code, '%s.py' % (lower_name))
         else:
-            module_path = os.path.join(self.SPELL_PATH, '%s.py' % spell_type.lower())
+            module_path = os.path.join(base_path, '%s.py' % module_type.lower())
 
         try:
-            spec = importlib.util.spec_from_file_location('Spell', module_path)
+            spec = importlib.util.spec_from_file_location(module_name, module_path)
             mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)
 
-            self._replace_params(self.config['spell']['options'], params)
+            options = self.config[lower_name]['options']
 
-            self.spell = mod.Spell(self.config.get('spell').get('options'))
+            self._replace_params(options, params)
+
+            return getattr(mod, module_name)(options)
         except:
-            logger.error('Failed to import the spell from %s' % (module_path))
-            raise Exception('Failed to import spell')
-
-
-    def load_outputter(self, params):
-        outputter_type = self.config.get('outputter').get('type')
-
-        module_path = os.path.join(self.OUTPUTTER_PATH, '%s.py' % outputter_type.lower())
-
-        try:
-            spec = importlib.util.spec_from_file_location('Outputter', module_path)
-            mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(mod)
-
-            self._replace_params(self.config['outputter']['options'], params)
-
-            self.outputter = mod.Outputter(self.config.get('outputter').get('options'))
-        except:
-            logger.error('Failed to import the outputter from %s' % (module_path))
-            raise Exception('Failed to import outputter')
+            logger.error('Failed to import the module %s from %s' % (module_name, module_path))
+            raise Exception('Failed to import module')
 
 
     def _validate_params(self, params):
