@@ -99,11 +99,10 @@ class Tohsaka:
 
     def _validate_params(self, params):
         defined_params = self.config.get('params', {})
-        for key in defined_params:
-            # if `required==False` or `required` field does not exist.
-            if not defined_params.get(key).get('required'):
-                continue
 
+        required = list(filter(lambda x: defined_params.get(x).get('required'), defined_params.keys()))
+
+        for key in required:
             if not key in params:
                 raise Exception('Required parameter %s does not exist. Current params %s' % (key, ', '.join(params.keys()) ))
 
@@ -111,6 +110,15 @@ class Tohsaka:
 
 
     def _replace_params(self, options, params):
+        defined_params = self.config.get('params', {})
+
+        # if any param is not set and has default value, apply it
+        default = list(filter(lambda x: defined_params.get(x).get('default'), defined_params.keys()))
+
+        for key in default:
+            if key not in params:
+                params[key] = defined_params.get(key).get('default')
+
         for key in options:
             value = options[key]
             if type(value) == str:
@@ -118,6 +126,7 @@ class Tohsaka:
                     value = value.replace('<<%s>>' % param, params[param])
 
                 options[key] = value
+
 
     def go(self):
         qualifier = Qualifier(self.config)
