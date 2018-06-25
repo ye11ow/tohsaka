@@ -57,6 +57,11 @@ class TestTohsaka:
                 assert type(code[prop]) == str
                 assert len(code[prop]) > 0
 
+    def test_describe_mystic_code(self):
+        keys = Tohsaka.describe_mystic_code('weather')
+
+        assert len(keys) > 0
+
     @pytest.mark.parametrize('spell_type', [
         'forum',
         'rest'

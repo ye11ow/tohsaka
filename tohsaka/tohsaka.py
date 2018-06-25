@@ -2,6 +2,7 @@ import sys
 import argparse
 import importlib.util
 from glob import glob
+from os.path import join as pathjoin
 import os, json
 
 from utils import log_util
@@ -15,17 +16,18 @@ class Tohsaka:
     item_per_log = 10
 
     PRINT_FORMAT = '{0: <16} - {1}'
+    PARAM_FORMAT = '{0: <16} - {1: <64}'
 
-    MYSTIC_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'mystic')
-    SPELL_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'spells')
-    OUTPUTTER_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'outputters')
+    MYSTIC_PATH = pathjoin(os.path.dirname(os.path.realpath(__file__)), 'mystic')
+    SPELL_PATH = pathjoin(os.path.dirname(os.path.realpath(__file__)), 'spells')
+    OUTPUTTER_PATH = pathjoin(os.path.dirname(os.path.realpath(__file__)), 'outputters')
 
 
     @classmethod
     def list_spells(cls):
         spells = []
 
-        for spell_file in glob(os.path.join(cls.SPELL_PATH, '*.py')):
+        for spell_file in glob(pathjoin(cls.SPELL_PATH, '*.py')):
             spec = importlib.util.spec_from_file_location('Spell', spell_file)
             mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)
@@ -52,7 +54,7 @@ class Tohsaka:
     def list_mystic_codes(cls):
         mystic = []
 
-        for mystic_file in glob(os.path.join(cls.MYSTIC_PATH, '*.json')):
+        for mystic_file in glob(pathjoin(cls.MYSTIC_PATH, '*.json')):
             with open(mystic_file, 'r') as f:
                 mystic_json = json.loads(f.read())
 
@@ -71,6 +73,38 @@ class Tohsaka:
         return mystic
 
 
+    @classmethod
+    def describe_mystic_code(cls, code):
+        mystic_json = {}
+
+        filepath = pathjoin(cls.MYSTIC_PATH, code + '.json')
+        with open(filepath, 'r') as f:
+            mystic_json = json.loads(f.read())
+
+        params = mystic_json.get('params', {})
+
+        print('%s - %s' % (mystic_json.get('name'), mystic_json.get('description')))
+        print('Parameters (%d):' % len(params.keys()))
+        for key in params:
+            value = params.get(key)
+
+            required = value.get('required')
+            if required:
+                name = '(*)' + key
+            else:
+                name = key
+
+            description = value.get('description')
+            if value.get('default'):
+                description += '. Default: %s' % value.get('default')
+
+
+            print(cls.PARAM_FORMAT.format(name, description))
+
+        return params.keys()
+
+
+
 
     def __init__(self, mystic_code, params):
         logger.info('Tohsaka start!')
@@ -85,7 +119,7 @@ class Tohsaka:
 
 
     def load_mystic_code(self, mystic_code):
-        filepath = os.path.join(self.MYSTIC_PATH, mystic_code + '.json')
+        filepath = pathjoin(self.MYSTIC_PATH, mystic_code + '.json')
 
         # load config
         try:
@@ -103,9 +137,9 @@ class Tohsaka:
         module_type = self.config.get(lower_name).get('type')
 
         if module_type == 'Custom':
-            module_path = os.path.join(self.MYSTIC_PATH, mystic_code, '%s.py' % (lower_name))
+            module_path = pathjoin(self.MYSTIC_PATH, mystic_code, '%s.py' % (lower_name))
         else:
-            module_path = os.path.join(base_path, '%s.py' % module_type.lower())
+            module_path = pathjoin(base_path, '%s.py' % module_type.lower())
 
         try:
             spec = importlib.util.spec_from_file_location(module_name, module_path)

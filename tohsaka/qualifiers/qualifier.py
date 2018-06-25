@@ -28,8 +28,7 @@ class Qualifier:
                 logger.debug('%s doesnt pass the qualify %d/%d' % (item.get('title'), value, target_value))
                 return False
         else:
-            logger.error('Unimplemented condition type %s. Qualify params: %s' % (condition, str(self.config)))
-            return True
+            raise Exception('Unimplemented condition type %s. Qualify params: %s' % (condition, str(self.config)))
 
 
     def go(self, item):
