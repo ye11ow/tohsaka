@@ -1,0 +1,39 @@
+{
+    "id": "weather",
+    "name": "Weather",
+    "description": "Get the weather forecast",
+    "spell": {
+        "type": "Rest",
+        "options": {
+            "endpoint": "http://api.openweathermap.org/data/2.5/forecast?q=<<city>>,<<country>>&appid=<<appid>>"
+        }
+    },
+    "outputter": {
+        "type": "JSON",
+        "options": {
+            "filename": "<<output_file>>"
+        }
+    },
+    "params": {
+        "appid": {
+            "type": "string",
+            "description": "Your appid for openweathermap",
+            "required": true
+        },
+        "city": {
+            "type": "string",
+            "description": "The name of the city",
+            "required": true
+        },
+        "country": {
+            "type": "string",
+            "description": "The code of the country",
+            "required": true
+        },
+        "output_file": {
+            "type": "string",
+            "description": "The name of the output file",
+            "default": "weather"
+        }
+    }
+}
