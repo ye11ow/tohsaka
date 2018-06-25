@@ -14,7 +14,9 @@ class Tohsaka:
 
     item_per_log = 10
 
-    MYSTIC_BASE_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'mystic')
+    PRINT_FORMAT = '{0: <16} - {1}'
+
+    MYSTIC_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'mystic')
     SPELL_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'spells')
     OUTPUTTER_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'outputters')
 
@@ -36,15 +38,38 @@ class Tohsaka:
                 'intro': mod.Spell.intro(),
             })
 
-        if len(spells) == 0:
-            print('No spells found...')
-            return []
-
-        print('%d spells found...' % len(spells))
+        print('Listing Spells...')
+        print(cls.PRINT_FORMAT.format('Name', 'Intro'))
+        print('-' * 80)
         for spell in spells:
-            print('%s: %s' % (spell['name'], spell['intro']))
+            print(cls.PRINT_FORMAT.format(spell['name'], spell['intro']))
+        print('\n')
 
         return spells
+
+
+    @classmethod
+    def list_mystic_codes(cls):
+        mystic = []
+
+        for mystic_file in glob(os.path.join(cls.MYSTIC_PATH, '*.json')):
+            with open(mystic_file, 'r') as f:
+                mystic_json = json.loads(f.read())
+
+            mystic.append({
+                'name': mystic_json.get('name'),
+                'description': mystic_json.get('description', ''),
+            })
+
+        print('Listing Mystic Codes...')
+        print(cls.PRINT_FORMAT.format('Name', 'Description'))
+        print('-' * 80)
+        for code in mystic:
+            print(cls.PRINT_FORMAT.format(code['name'], code['description']))
+        print('\n')
+
+        return mystic
+
 
 
     def __init__(self, mystic_code, params):
@@ -60,7 +85,7 @@ class Tohsaka:
 
 
     def load_mystic_code(self, mystic_code):
-        filepath = os.path.join(self.MYSTIC_BASE_PATH, mystic_code + '.json')
+        filepath = os.path.join(self.MYSTIC_PATH, mystic_code + '.json')
 
         # load config
         try:
@@ -78,7 +103,7 @@ class Tohsaka:
         module_type = self.config.get(lower_name).get('type')
 
         if module_type == 'Custom':
-            module_path = os.path.join(self.MYSTIC_BASE_PATH, mystic_code, '%s.py' % (lower_name))
+            module_path = os.path.join(self.MYSTIC_PATH, mystic_code, '%s.py' % (lower_name))
         else:
             module_path = os.path.join(base_path, '%s.py' % module_type.lower())
 

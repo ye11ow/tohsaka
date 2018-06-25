@@ -14,4 +14,3 @@ class BaseSpell(metaclass=ABCMeta):
     @abstractmethod
     def intro(self):
         pass
-

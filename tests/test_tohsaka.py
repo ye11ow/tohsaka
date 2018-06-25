@@ -49,6 +49,13 @@ class TestTohsaka:
                 assert type(spell[prop]) == str
                 assert len(spell[prop]) > 0
 
+    def test_list_mystic(self):
+        codes = Tohsaka.list_mystic_codes()
+
+        for code in codes:
+            for prop in ['name', 'description']:
+                assert type(code[prop]) == str
+                assert len(code[prop]) > 0
 
     @pytest.mark.parametrize('spell_type', [
         'forum',
