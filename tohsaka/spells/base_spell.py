@@ -8,9 +8,9 @@ class BaseSpell(metaclass=ABCMeta):
     @classmethod
     @abstractmethod
     def name(self):
-        pass
+        raise NotImplementedError
 
     @classmethod
     @abstractmethod
     def intro(self):
-        pass
+        raise NotImplementedError

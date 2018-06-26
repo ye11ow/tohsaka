@@ -7,15 +7,15 @@ class BaseOutputter(metaclass=ABCMeta):
 
     @abstractmethod
     def _output(self, item):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def done(self):
-        pass
+        raise NotImplementedError
 
     @abstractproperty
     def REQUIRED_FIELDS(self):
-        pass
+        raise NotImplementedError
 
     def _valid(self, item):
         for field in self.REQUIRED_FIELDS:
