@@ -20,7 +20,6 @@ class Outputter(BaseOutputter):
         BaseOutputter.__init__(self, config)
 
         self.file = config.get('filename', 'output') + '.xml'
-        self.output_path = os.path.join(self.OUTPUT_FOLDER, self.file)
         self.title = config.get('title', 'Sample RSS')
         self.description = config.get('description', 'Sample')
         self.base_link = config.get('host')
@@ -42,7 +41,7 @@ class Outputter(BaseOutputter):
         if not os.path.isdir(self.OUTPUT_FOLDER):
             os.mkdir(self.OUTPUT_FOLDER)
 
-        self.fg.atom_file(self.output_path)
+        self.fg.atom_file(os.path.join(self.OUTPUT_FOLDER, self.file))
 
 
     def _output(self, item):
