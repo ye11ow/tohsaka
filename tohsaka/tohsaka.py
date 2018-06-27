@@ -17,7 +17,7 @@ class Tohsaka:
 
     PRINT_FORMAT = '{0: <16} - {1}'
     PARAM_FORMAT = '{0: <16} - {1: <64}'
-    PARAM_INPUT_FORMAT = '{0}: {1}?'
+    PARAM_INPUT_FORMAT = '{0}: {1}? '
 
     MYSTIC_PATH = pathjoin(os.path.dirname(os.path.realpath(__file__)), 'mystic')
     SPELL_PATH = pathjoin(os.path.dirname(os.path.realpath(__file__)), 'spells')
@@ -99,45 +99,43 @@ class Tohsaka:
 
 
     @classmethod
-    def run(cls, mystic_code):
+    def run(cls, mystic_code, input_params=None, save=None):
         mystic_json = cls.load_mystic_code(mystic_code)
         params = mystic_json.get('params', {})
 
-        input_params = {}
+        if not input_params:
+            input_params = {}
 
-        for key, value in params.items():
-            required = value.get('required')
-            if required:
-                name = '(*)' + key
-            else:
-                name = key
+            for key, value in params.items():
+                required = value.get('required')
+                if required:
+                    name = '(*)' + key
+                else:
+                    name = key
 
-            description = value.get('description')
-            if value.get('default'):
-                description += '. (Default: %s)' % value.get('default')
+                description = value.get('description')
+                if value.get('default'):
+                    description += '. (Default: %s)' % value.get('default')
 
-            result = input(cls.PARAM_INPUT_FORMAT.format(name, description))
+                result = input(cls.PARAM_INPUT_FORMAT.format(name, description))
 
-            if result:
-                input_params[key] = str(result)
-            elif value.get('default'):
-                 input_params[key] = value.get('default')
-        print('\n')
+                if result:
+                    input_params[key] = str(result)
+                elif value.get('default'):
+                    input_params[key] = value.get('default')
+            print('\n')
+
+            if save:
+                Tohsaka.save(input_params, save)
 
         tohsaka = Tohsaka(mystic_code, input_params)
         tohsaka.go()
 
 
-    def __init__(self, mystic_code, params):
-        logger.info('Tohsaka start!')
-
-        self.config = self.load_mystic_code(mystic_code)
-        logger.info('Loaded Mystic Code %s' % mystic_code)
-
-        self._validate_params(params)
-
-        self.spell = self._load_module('Spell', mystic_code, self.SPELL_PATH, params)
-        self.outputter = self._load_module('Outputter', mystic_code, self.OUTPUTTER_PATH, params)
+    @classmethod
+    def save(cls, params, filepath):
+        with open(filepath + '.json', 'w') as f:
+            f.write(json.dumps(params, indent=4))
 
 
     @classmethod
@@ -151,8 +149,20 @@ class Tohsaka:
 
             return mystic_json
         except:
-            logger.error('Failed to load mystic code %s. Please check whether "%s" exists' % (mystic_code, filepath))
+            logger.error('Failed to load mystic code %s. Please check whether "%s" exists.' % (mystic_code, filepath))
             raise Exception('Mystic code not found')
+
+
+    def __init__(self, mystic_code, params):
+        logger.info('Tohsaka start!')
+
+        self.config = self.load_mystic_code(mystic_code)
+        logger.info('Loaded Mystic Code %s' % mystic_code)
+
+        self._validate_params(params)
+
+        self.spell = self._load_module('Spell', mystic_code, self.SPELL_PATH, params)
+        self.outputter = self._load_module('Outputter', mystic_code, self.OUTPUTTER_PATH, params)
 
 
     def _load_module(self, module_name, mystic_code, base_path, params):
@@ -186,7 +196,7 @@ class Tohsaka:
 
         for key in required:
             if not key in params:
-                raise Exception('Required parameter %s does not exist. Current params %s' % (key, ', '.join(params.keys()) ))
+                raise Exception('Required parameter "%s" does not exist. Current params [%s].' % (key, ', '.join(params.keys()) ))
 
         return True
 

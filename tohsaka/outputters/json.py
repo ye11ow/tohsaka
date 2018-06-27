@@ -9,7 +9,6 @@ class Outputter(BaseOutputter):
     def REQUIRED_FIELDS(self):
         return []
 
-
     def __init__(self, config):
         BaseOutputter.__init__(self, config)
 
