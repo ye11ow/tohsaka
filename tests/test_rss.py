@@ -3,7 +3,7 @@ from os.path import join as pathjoin
 from unittest.mock import patch
 from tohsaka.outputters.rss import Outputter
 
-class TestRestSpell:
+class TestRSS:
     """
     Add more cases related to pubDate
     """

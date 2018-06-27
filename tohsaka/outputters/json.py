@@ -5,6 +5,8 @@ import json
 
 class Outputter(BaseOutputter):
 
+    OUTPUT_FOLDER = os.path.join(os.getcwd(), 'output')
+
     @property
     def REQUIRED_FIELDS(self):
         return []
@@ -13,16 +15,13 @@ class Outputter(BaseOutputter):
         BaseOutputter.__init__(self, config)
 
         self.file = config.get('filename', 'output') + '.json'
-        folder = os.path.join(os.getcwd(), 'output')
-        self.output_path = os.path.join(folder, self.file)
-
-        if not os.path.isdir(folder):
-            os.mkdir(folder)
-
         self.data = []
 
     def done(self):
-        with open(self.output_path, 'w') as f:
+        if not os.path.isdir(self.OUTPUT_FOLDER):
+            os.mkdir(self.OUTPUT_FOLDER)
+
+        with open(os.path.join(self.OUTPUT_FOLDER, self.file), 'w') as f:
             f.write(json.dumps(self.data, indent=2, sort_keys=True))
 
     def _output(self, item):
