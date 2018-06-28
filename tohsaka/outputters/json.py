@@ -1,11 +1,12 @@
-from tohsaka.outputters.base_outputter import BaseOutputter
 import os
 import json
 
+from tohsaka.outputters.base_outputter import BaseOutputter
+
 
 class Outputter(BaseOutputter):
-
-    OUTPUT_FOLDER = os.path.join(os.getcwd(), 'output')
+    """Outputter result into a JSON file
+    """
 
     @property
     def REQUIRED_FIELDS(self):
@@ -17,12 +18,9 @@ class Outputter(BaseOutputter):
         self.file = config.get('filename', 'output') + '.json'
         self.data = []
 
-    def done(self):
-        if not os.path.isdir(self.OUTPUT_FOLDER):
-            os.mkdir(self.OUTPUT_FOLDER)
+    def _output(self):
+        with open(os.path.join(self.OUTPUT_FOLDER, self.file), 'w') as json_file:
+            json_file.write(json.dumps(self.data, indent=2, sort_keys=True))
 
-        with open(os.path.join(self.OUTPUT_FOLDER, self.file), 'w') as f:
-            f.write(json.dumps(self.data, indent=2, sort_keys=True))
-
-    def _output(self, item):
+    def _add_item(self, item):
         self.data.append(item)

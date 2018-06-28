@@ -1,16 +1,20 @@
+import os
+
 from abc import ABCMeta, abstractmethod, abstractproperty
 
 class BaseOutputter(metaclass=ABCMeta):
+
+    OUTPUT_FOLDER = os.path.join(os.getcwd(), 'output')
 
     def __init__(self, config):
         self.config = config
 
     @abstractmethod
-    def _output(self, item):
+    def _output(self):
         raise NotImplementedError
 
     @abstractmethod
-    def done(self):
+    def _add_item(self, item):
         raise NotImplementedError
 
     @abstractproperty
@@ -18,15 +22,18 @@ class BaseOutputter(metaclass=ABCMeta):
         raise NotImplementedError
 
     def _valid(self, item):
-        for field in self.REQUIRED_FIELDS:
-            if field not in item:
-                return False
+        return all(field in item for field in self.REQUIRED_FIELDS)
 
-        return True
+    def done(self):
+        if not os.path.isdir(self.OUTPUT_FOLDER):
+            os.makedirs(self.OUTPUT_FOLDER)
+
+        return self._output()
 
     def go(self, item):
         if self._valid(item):
-            return self._output(item)
+            return self._add_item(item)
         else :
             return False
+
 

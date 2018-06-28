@@ -9,8 +9,6 @@ from tohsaka.outputters.base_outputter import BaseOutputter
 
 class Outputter(BaseOutputter):
 
-    OUTPUT_FOLDER = os.path.join(os.getcwd(), 'output')
-
     @property
     def REQUIRED_FIELDS(self):
         return ['description', 'pubDate', 'title']
@@ -37,14 +35,11 @@ class Outputter(BaseOutputter):
         fg.description(self.description)
         fg.author(name='Tohsaka')
 
-    def done(self):
-        if not os.path.isdir(self.OUTPUT_FOLDER):
-            os.mkdir(self.OUTPUT_FOLDER)
-
+    def _output(self):
         self.fg.atom_file(os.path.join(self.OUTPUT_FOLDER, self.file))
 
 
-    def _output(self, item):
+    def _add_item(self, item):
         title = item.get('title')
         description = item.get('description')
         link = item.get('link')

@@ -10,7 +10,7 @@ class TestJSON:
             'filename': 'test'
         })
 
-        outputter.go({
+        outputter._add_item({
             'title': '123',
             'description': '345',
             'link': 'link'
@@ -19,12 +19,11 @@ class TestJSON:
         assert len(outputter.data) == 1
 
     @patch('tohsaka.outputters.json.open')
-    @patch('tohsaka.outputters.json.os')
-    def test_done_f(self, os, open):
+    def test_output(self, open):
         outputter = Outputter({
             'filename': 'test'
         })
 
-        outputter.done()
+        outputter._output()
 
         assert open.called

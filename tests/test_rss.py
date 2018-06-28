@@ -8,7 +8,23 @@ class TestRSS:
     Add more cases related to pubDate
     """
 
-    def test_add_entry(self):
+    def test_add_item(self):
+        outputter = Outputter({
+            'filename': 'test',
+            'description': 'desc',
+            'host': 'http://www.google.com'
+        })
+
+        outputter._add_item({
+            'title': '123',
+            'description': '345',
+            'link': 'link',
+            'pubDate': 'now'
+        })
+
+        assert len(outputter.fg.item()) == 1
+
+    def test_invalid_item(self):
         outputter = Outputter({
             'filename': 'test',
             'description': 'desc',
@@ -18,25 +34,19 @@ class TestRSS:
         outputter.go({
             'title': '123',
             'description': '345',
-            'link': 'link',
-            'pubDate': 'now'
+            'link': 'link'
         })
 
-        assert len(outputter.fg.item()) == 1
+        assert len(outputter.fg.item()) == 0
 
     @patch('tohsaka.outputters.rss.FeedGenerator')
-    @patch('tohsaka.outputters.rss.os.mkdir')
-    def test_done(self, mkdir, FeedGenerator):
-        temp_dir = pathjoin(tempfile.gettempdir(), 'EMPTYFOLDER')
-
+    def test_output(self, FeedGenerator):
         outputter = Outputter({
             'filename': 'test',
             'description': 'desc',
             'host': 'http://www.google.com'
         })
-        outputter.OUTPUT_FOLDER = temp_dir
 
-        outputter.done()
+        outputter._output()
 
-        mkdir.assert_called_once_with(temp_dir)
         FeedGenerator.return_value.atom_file.assert_called_once()
