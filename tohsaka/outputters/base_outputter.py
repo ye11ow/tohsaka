@@ -33,7 +33,5 @@ class BaseOutputter(metaclass=ABCMeta):
     def go(self, item):
         if self._valid(item):
             return self._add_item(item)
-        else :
+        else:
             return False
-
-

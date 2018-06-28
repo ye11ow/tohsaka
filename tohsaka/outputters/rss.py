@@ -1,8 +1,8 @@
+import os
+from datetime import datetime
 from feedgen.feed import FeedGenerator
 import pytz
-import os
 from dateutil import parser
-from datetime import datetime
 
 from tohsaka.outputters.base_outputter import BaseOutputter
 
@@ -43,17 +43,17 @@ class Outputter(BaseOutputter):
         title = item.get('title')
         description = item.get('description')
         link = item.get('link')
-        pubDate = item.get('pubDate')
+        pub_date = item.get('pubDate')
 
-        fe = self.fg.add_entry()
+        entry = self.fg.add_entry()
 
-        fe.title(title)
-        fe.link(href=link)
-        fe.content(content=description, type='html')
-        fe.guid(link)
+        entry.title(title)
+        entry.link(href=link)
+        entry.content(content=description, type='html')
+        entry.guid(link)
         try:
-            pubDate = parser.parse(pubDate).replace(tzinfo=pytz.timezone('Asia/Shanghai'))
+            pub_date = parser.parse(pub_date).replace(tzinfo=pytz.timezone('Asia/Shanghai'))
         except:
-            pubDate = datetime.now(pytz.utc).isoformat()
-        fe.pubDate(pubDate)
-        fe.updated(pubDate)
+            pub_date = datetime.now(pytz.utc).isoformat()
+        entry.pubDate(pub_date)
+        entry.updated(pub_date)

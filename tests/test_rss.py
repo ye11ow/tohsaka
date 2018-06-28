@@ -1,5 +1,3 @@
-import tempfile
-from os.path import join as pathjoin
 from unittest.mock import patch
 from tohsaka.outputters.rss import Outputter
 
@@ -37,7 +35,7 @@ class TestRSS:
             'link': 'link'
         })
 
-        assert len(outputter.fg.item()) == 0
+        assert not outputter.fg.item()
 
     @patch('tohsaka.outputters.rss.FeedGenerator')
     def test_output(self, FeedGenerator):
