@@ -1,0 +1,29 @@
+{
+    "id": "stock",
+    "name": "Stock",
+    "description": "Get the stock quote",
+    "spell": {
+        "type": "Rest",
+        "options": {
+            "endpoint": "https://api.iextrading.com/1.0/stock/<<symbol>>/quote"
+        }
+    },
+    "outputter": {
+        "type": "JSON",
+        "options": {
+            "filename": "<<output_file>>"
+        }
+    },
+    "params": {
+        "symbol": {
+            "type": "string",
+            "description": "The symbol of the company",
+            "required": true
+        },
+        "output_file": {
+            "type": "string",
+            "description": "The name of the output file",
+            "default": "stock"
+        }
+    }
+}
