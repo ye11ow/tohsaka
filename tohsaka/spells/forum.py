@@ -8,6 +8,8 @@ logger = log_util.get_logger('tohsaka')
 
 class Spell(BaseSpell):
 
+    REQUIRED_OPTIONS = ['entry']
+
     def __init__(self, config):
         BaseSpell.__init__(self, config)
 

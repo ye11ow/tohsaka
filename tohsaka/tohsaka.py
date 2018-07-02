@@ -7,6 +7,7 @@ import os, json
 
 from utils import log_util
 from tohsaka.qualifiers.qualifier import Qualifier
+from tohsaka.spells import TohsakaException
 
 logger = log_util.get_logger('tohsaka')
 
@@ -184,7 +185,9 @@ class Tohsaka:
             self._replace_params(options, params)
 
             return getattr(mod, module_name)(options)
-        except:
+        except TohsakaException as err:
+            raise err
+        except Exception:
             logger.error('Failed to import the module %s from %s' % (module_name, module_path))
             raise Exception('Failed to import module')
 
@@ -213,7 +216,7 @@ class Tohsaka:
 
         for key in options:
             value = options[key]
-            if type(value) == str:
+            if isinstance(value, str):
                 for param in params:
                     value = value.replace('<<%s>>' % param, params[param])
 

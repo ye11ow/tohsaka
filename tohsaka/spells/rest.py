@@ -7,6 +7,8 @@ logger = log_util.get_logger('Rest')
 
 class Spell(BaseSpell):
 
+    REQUIRED_OPTIONS = ['endpoint']
+
     def __init__(self, config):
         BaseSpell.__init__(self, config)
 

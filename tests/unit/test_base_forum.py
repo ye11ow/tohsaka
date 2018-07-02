@@ -15,6 +15,12 @@ class DummyItem:
 
 class TestForum:
 
+    def _create_spell(self, options={}):
+        base = {
+            'entry': 'http://localhost/index'
+        }
+        return Spell({**base, **options})
+
     def test_name(self):
         name = Spell.name()
 
@@ -33,7 +39,7 @@ class TestForum:
         html = HTML(html=load_html('basepage'))
         HTMLSession.return_value.get.return_value = DummyResponse(html)
 
-        spell = Spell({
+        spell = self._create_spell({
             'itemListSelector': '#unselect'
         })
         result = spell._go_page('test_url')
@@ -48,7 +54,7 @@ class TestForum:
     def test_go_page_failed_response(self, HTMLSession):
         HTMLSession.return_value.get.return_value = DummyResponse('', 404)
 
-        spell = Spell({})
+        spell = self._create_spell()
 
         result = spell._go_page('test_url')
 
@@ -61,7 +67,7 @@ class TestForum:
         html = HTML(html=load_html('basepage'))
         HTMLSession.return_value.get.return_value = DummyResponse(html)
 
-        spell = Spell({
+        spell = self._create_spell({
             'titleSelector': '.title',
             'dateSelector': '.date',
             'contentSelector': '.description'
@@ -82,7 +88,7 @@ class TestForum:
         html = HTML(html=load_html('basepage'))
         HTMLSession.return_value.get.return_value = DummyResponse(html)
 
-        spell = Spell({
+        spell = self._create_spell({
             'titleSelector': '.wrongtitle',
             'dateSelector': '.wrongdate',
             'contentSelector': '.wrongdescription'
@@ -99,7 +105,7 @@ class TestForum:
         item = MagicMock()
         item.absolute_links = ['test', 'lin']
 
-        spell = Spell({})
+        spell = self._create_spell()
         result = spell.process_item(item)
 
         assert result == None
@@ -121,8 +127,7 @@ class TestForum:
     def test_go_multi_page(self, _go_page):
         PAGES = 2
 
-        spell = Spell({
-            'entry': 'http://localhost/index',
+        spell = self._create_spell({
             'page_param': 'page',
             'pages': PAGES
         })
