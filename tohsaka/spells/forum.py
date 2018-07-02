@@ -1,4 +1,3 @@
-import sys
 from requests_html import HTMLSession
 from tohsaka.spells.base_spell import BaseSpell
 from utils import log_util
@@ -15,12 +14,12 @@ class Spell(BaseSpell):
 
 
     @classmethod
-    def name(self):
+    def name(cls):
         return 'Forum'
 
 
     @classmethod
-    def intro(self):
+    def intro(cls):
         return 'Get forum-like data'
 
 
@@ -38,15 +37,15 @@ class Spell(BaseSpell):
 
     def _go_page(self, url):
         session = HTMLSession()
-        r = session.get(url)
+        req = session.get(url)
 
-        if r.status_code != 200:
-            logger.warn('Error when fetching url %s, with response code %d' % (url, r.status_code))
+        if req.status_code != 200:
+            logger.warning('Error when fetching url %s, with response code %d', url, req.status_code)
             return
 
-        items = r.html.find(self.config.get('itemListSelector'))
+        items = req.html.find(self.config.get('itemListSelector'))
 
-        logger.debug('%d items detected in the page' % len(items))
+        logger.debug('%d items detected in the page', len(items))
 
         for item in items:
             response = self.process_item(item)
@@ -61,7 +60,7 @@ class Spell(BaseSpell):
             pages = int(self.config.get('pages', 1))
 
             for i in range(pages):
-                logger.debug('Process page %d/%d' % (i + 1, pages))
+                logger.debug('Process page %d/%d', i + 1, pages)
                 page_url = page_base_url + str(i + 1)
                 results = self._go_page(page_url)
                 for item in results:
@@ -81,27 +80,24 @@ class Spell(BaseSpell):
         link = item.absolute_links.pop()
 
         session = HTMLSession()
-        r = session.get(link)
+        req = session.get(link)
 
         try:
-            title = r.html.find(self.config.get('titleSelector'), first=True).text
-            pubDate = self.get_date(r.html.find(self.config.get('dateSelector'), first=True))
-            description = self.get_description(r.html.find(self.config.get('contentSelector'), first=True))
-            addition = self.get_addition(r.html)
-        except Exception as e:
-            logger.warn('failed to process url ' + r.html.url)
-            logger.warn(str(e))
+            title = req.html.find(self.config.get('titleSelector'), first=True).text
+            pub_date = self.get_date(req.html.find(self.config.get('dateSelector'), first=True))
+            description = self.get_description(req.html.find(self.config.get('contentSelector'), first=True))
+            addition = self.get_addition(req.html)
+        except Exception as err:
+            logger.warning('failed to process url %s', req.html.url)
+            logger.warning(str(err))
             return {}
 
         response = {
             'link': link,
             'title': title,
             'description': description,
-            'pubDate': pubDate,
+            'pubDate': pub_date,
             'addition': addition
         }
 
         return response
-
-
-

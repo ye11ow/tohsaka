@@ -62,20 +62,17 @@ class TestTohsaka:
 
         assert len(keys) > 0
 
-    @pytest.mark.parametrize('spell_type', [
-        'forum',
-        'rest'
-    ])
+
     @patch('tohsaka.tohsaka.Tohsaka.__init__', return_value=None)
-    def test_load_spell(self, __init__, spell_type):
-        tohsaka = Tohsaka('test', {})
+    def test_load_spell(self, __init__):
+        tohsaka = Tohsaka('rest', {})
         tohsaka.config = {
             'spell': {
-                'type': spell_type,
-                'options': {}
+                'type': 'rest',
+                'options': {'endpoint': ''}
             }
         }
-        tohsaka.spell = tohsaka._load_module('Spell', 'test', tohsaka.SPELL_PATH, {})
+        tohsaka.spell = tohsaka._load_module('Spell', 'rest', tohsaka.SPELL_PATH, {})
 
         assert hasattr(tohsaka, 'spell')
         assert callable(tohsaka.spell.go)
@@ -90,7 +87,7 @@ class TestTohsaka:
         tohsaka.config = {
             'outputter': {
                 'type': outputter_type,
-                'options': {}
+                'options': {'endpoint': ''}
             }
         }
 
