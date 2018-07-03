@@ -42,7 +42,7 @@ class TestTohsaka:
     }
 
     def test_list_spells(self):
-        spells = Tohsaka.list_spells()
+        spells = Tohsaka.get_spells()
 
         for spell in spells:
             for prop in ['name', 'intro']:
@@ -50,18 +50,12 @@ class TestTohsaka:
                 assert len(spell[prop]) > 0
 
     def test_list_mystic(self):
-        codes = Tohsaka.list_mystic_codes()
+        codes = Tohsaka.get_mystic_codes()
 
         for code in codes:
             for prop in ['name', 'description']:
                 assert type(code[prop]) == str
                 assert len(code[prop]) > 0
-
-    def test_describe_mystic_code(self):
-        keys = Tohsaka.describe_mystic_code('weather')
-
-        assert len(keys) > 0
-
 
     @patch('tohsaka.tohsaka.Tohsaka.__init__', return_value=None)
     def test_load_spell(self, __init__):

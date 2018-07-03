@@ -12,21 +12,65 @@ from tohsaka.spells import TohsakaException
 logger = log_util.get_logger('tohsaka')
 
 
+PRINT_FORMAT = '{0: <16} - {1}'
+PARAM_FORMAT = '{0: <16} - {1: <64}'
+
+
+def print_spells(): # pragma: no cover
+    spells = Tohsaka.get_spells()
+
+    print('Listing Spells...')
+    print(PRINT_FORMAT.format('Name', 'Intro'))
+    print('-' * 80)
+    for spell in spells:
+        print(PRINT_FORMAT.format(spell['name'], spell['intro']))
+    print('\n')
+
+
+def print_mystic_codes(): # pragma: no cover
+    mystic_codes = Tohsaka.get_mystic_codes()
+
+    print('Listing Mystic Codes...')
+    print(PRINT_FORMAT.format('Name', 'Description'))
+    print('-' * 80)
+    for code in mystic_codes:
+        print(PRINT_FORMAT.format(code['name'], code['description']))
+    print('\n')
+
+
+def print_mystic_code(mystic_code): # pragma: no cover
+    mystic_json = Tohsaka.load_mystic_code(mystic_code)
+    params = mystic_json.get('params', {})
+
+    print('%s - %s' % (mystic_json.get('name'), mystic_json.get('description')))
+    print('Parameters (%d):' % len(params.keys()))
+    for key, value in params.items():
+        required = value.get('required')
+        if required:
+            name = '(*)' + key
+        else:
+            name = key
+
+        description = value.get('description')
+        if value.get('default'):
+            description += '. Default: %s' % value.get('default')
+
+        print(PARAM_FORMAT.format(name, description))
+    print('\n')
+
+
 class Tohsaka:
 
     item_per_log = 10
 
-    PRINT_FORMAT = '{0: <16} - {1}'
-    PARAM_FORMAT = '{0: <16} - {1: <64}'
     PARAM_INPUT_FORMAT = '{0}: {1}? '
 
     MYSTIC_PATH = pathjoin(os.path.dirname(os.path.realpath(__file__)), 'mystic')
     SPELL_PATH = pathjoin(os.path.dirname(os.path.realpath(__file__)), 'spells')
     OUTPUTTER_PATH = pathjoin(os.path.dirname(os.path.realpath(__file__)), 'outputters')
 
-
     @classmethod
-    def list_spells(cls):
+    def get_spells(cls):
         spells = []
 
         for spell_file in glob(pathjoin(cls.SPELL_PATH, '*.py')):
@@ -42,18 +86,11 @@ class Tohsaka:
                 'intro': mod.Spell.intro(),
             })
 
-        print('Listing Spells...')
-        print(cls.PRINT_FORMAT.format('Name', 'Intro'))
-        print('-' * 80)
-        for spell in spells:
-            print(cls.PRINT_FORMAT.format(spell['name'], spell['intro']))
-        print('\n')
-
         return spells
 
 
     @classmethod
-    def list_mystic_codes(cls):
+    def get_mystic_codes(cls):
         mystic = []
 
         for mystic_file in glob(pathjoin(cls.MYSTIC_PATH, '*.json')):
@@ -65,38 +102,7 @@ class Tohsaka:
                 'description': mystic_json.get('description', ''),
             })
 
-        print('Listing Mystic Codes...')
-        print(cls.PRINT_FORMAT.format('Name', 'Description'))
-        print('-' * 80)
-        for code in mystic:
-            print(cls.PRINT_FORMAT.format(code['name'], code['description']))
-        print('\n')
-
         return mystic
-
-
-    @classmethod
-    def describe_mystic_code(cls, mystic_code):
-        mystic_json = cls.load_mystic_code(mystic_code)
-        params = mystic_json.get('params', {})
-
-        print('%s - %s' % (mystic_json.get('name'), mystic_json.get('description')))
-        print('Parameters (%d):' % len(params.keys()))
-        for key, value in params.items():
-            required = value.get('required')
-            if required:
-                name = '(*)' + key
-            else:
-                name = key
-
-            description = value.get('description')
-            if value.get('default'):
-                description += '. Default: %s' % value.get('default')
-
-            print(cls.PARAM_FORMAT.format(name, description))
-        print('\n')
-
-        return params.keys()
 
 
     @classmethod

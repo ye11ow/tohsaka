@@ -1,1 +1,1 @@
-from .tohsaka import Tohsaka
+from .tohsaka import *
