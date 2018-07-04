@@ -1,6 +1,6 @@
 from requests_html import HTMLSession
 from tohsaka.spells.base_spell import BaseSpell
-from utils import log_util
+from tohsaka.utils import log_util
 
 logger = log_util.get_logger('tohsaka')
 
@@ -39,11 +39,17 @@ class Spell(BaseSpell):
         session = HTMLSession()
         req = session.get(url)
 
+        if req.history:
+            logger.warning('Redirected to %s', req.url)
+
         if req.status_code != 200:
-            logger.warning('Error when fetching url %s, with response code %d', url, req.status_code)
+            logger.warning('Error when fetching url %s, with response code %d', req.url, req.status_code)
             return
 
         items = req.html.find(self.config.get('itemListSelector'))
+
+        if len(items) == 0:
+            logger.warning('Nothing found in url %s', req.url)
 
         logger.debug('%d items detected in the page', len(items))
 

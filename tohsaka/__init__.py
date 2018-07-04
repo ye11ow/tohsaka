@@ -1,1 +1,1 @@
-from .tohsaka import *
+from . import *

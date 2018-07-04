@@ -5,7 +5,7 @@ from glob import glob
 from os.path import join as pathjoin
 import os, json
 
-from utils import log_util
+from tohsaka.utils import log_util
 from tohsaka.qualifiers.qualifier import Qualifier
 from tohsaka.spells import TohsakaException
 
