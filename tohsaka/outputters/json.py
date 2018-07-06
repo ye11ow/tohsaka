@@ -1,7 +1,7 @@
 import os
 import json
 
-from tohsaka.outputters.base_outputter import BaseOutputter
+from outputters.base_outputter import BaseOutputter
 
 
 class Outputter(BaseOutputter):

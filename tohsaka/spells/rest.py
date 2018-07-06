@@ -1,6 +1,6 @@
 import requests
-from tohsaka.spells.base_spell import BaseSpell
-from tohsaka.utils import log_util
+from spells.base_spell import BaseSpell
+from utils import log_util
 
 logger = log_util.get_logger('Rest')
 

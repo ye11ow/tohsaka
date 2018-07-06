@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
-from tohsaka.spells import TohsakaException
+from spells import TohsakaException
 
 class BaseSpell(metaclass=ABCMeta):
 
