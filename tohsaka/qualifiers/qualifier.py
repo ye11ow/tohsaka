@@ -1,4 +1,4 @@
-from tohsaka.utils.log_util import get_logger
+from utils.log_util import get_logger
 
 logger = get_logger('qualifier')
 

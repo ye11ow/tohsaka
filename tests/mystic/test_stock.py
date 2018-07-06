@@ -1,7 +1,7 @@
 import tempfile
 import json
 from os.path import join as pathjoin
-from tohsaka.tohsaka import Tohsaka
+from tohsaka import Tohsaka
 
 class TestStock:
 

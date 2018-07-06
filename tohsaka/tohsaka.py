@@ -5,9 +5,9 @@ from glob import glob
 from os.path import join as pathjoin
 import os, json
 
-from tohsaka.utils import log_util
-from tohsaka.qualifiers.qualifier import Qualifier
-from tohsaka.spells import TohsakaException
+from utils import log_util
+from qualifiers.qualifier import Qualifier
+from spells import TohsakaException
 
 logger = log_util.get_logger('tohsaka')
 
