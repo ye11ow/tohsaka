@@ -2,7 +2,7 @@ import tempfile
 import json
 import os
 from os.path import join as pathjoin
-from tohsaka import Tohsaka
+from tohsaka.tohsaka import Tohsaka
 
 class TestWeather:
 
