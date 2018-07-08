@@ -1,62 +1,14 @@
-import sys
-import argparse
 import importlib.util
 from glob import glob
 from os.path import join as pathjoin
-import os, json
+import os
+import json
 
 from utils import log_util
 from qualifiers.qualifier import Qualifier
 from spells import TohsakaException
 
 logger = log_util.get_logger('tohsaka')
-
-
-PRINT_FORMAT = '{0: <16} - {1}'
-PARAM_FORMAT = '{0: <16} - {1: <64}'
-
-
-def print_spells(): # pragma: no cover
-    spells = Tohsaka.get_spells()
-
-    print('Listing Spells...')
-    print(PRINT_FORMAT.format('Name', 'Intro'))
-    print('-' * 80)
-    for spell in spells:
-        print(PRINT_FORMAT.format(spell['name'], spell['intro']))
-    print('\n')
-
-
-def print_mystic_codes(): # pragma: no cover
-    mystic_codes = Tohsaka.get_mystic_codes()
-
-    print('Listing Mystic Codes...')
-    print(PRINT_FORMAT.format('Name', 'Description'))
-    print('-' * 80)
-    for code in mystic_codes:
-        print(PRINT_FORMAT.format(code['name'], code['description']))
-    print('\n')
-
-
-def print_mystic_code(mystic_code): # pragma: no cover
-    mystic_json = Tohsaka.load_mystic_code(mystic_code)
-    params = mystic_json.get('params', {})
-
-    print('%s - %s' % (mystic_json.get('name'), mystic_json.get('description')))
-    print('Parameters (%d):' % len(params.keys()))
-    for key, value in params.items():
-        required = value.get('required')
-        if required:
-            name = '(*)' + key
-        else:
-            name = key
-
-        description = value.get('description')
-        if value.get('default'):
-            description += '. Default: %s' % value.get('default')
-
-        print(PARAM_FORMAT.format(name, description))
-    print('\n')
 
 
 class Tohsaka:
@@ -94,8 +46,8 @@ class Tohsaka:
         mystic = []
 
         for mystic_file in glob(pathjoin(cls.MYSTIC_PATH, '*.json')):
-            with open(mystic_file, 'r') as f:
-                mystic_json = json.loads(f.read())
+            with open(mystic_file, 'r') as json_file:
+                mystic_json = json.loads(json_file.read())
 
             mystic.append({
                 'name': mystic_json.get('name'),
@@ -141,8 +93,8 @@ class Tohsaka:
 
     @classmethod
     def save(cls, params, filepath):
-        with open(filepath + '.json', 'w') as f:
-            f.write(json.dumps(params, indent=4))
+        with open(filepath + '.json', 'w') as json_file:
+            json_file.write(json.dumps(params, indent=4))
 
 
     @classmethod
@@ -205,7 +157,7 @@ class Tohsaka:
 
         for key in required:
             if not key in params:
-                raise Exception('Required parameter "%s" does not exist. Current params [%s].' % (key, ', '.join(params.keys()) ))
+                raise Exception('Required parameter "%s" does not exist. Current params [%s].' % (key, ', '.join(params.keys())))
 
         return True
 
