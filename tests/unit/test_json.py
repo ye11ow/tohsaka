@@ -1,7 +1,7 @@
 import tempfile
 from os.path import join as pathjoin
 from unittest.mock import patch
-from tohsaka.outputters.json import Outputter
+from outputters.json import Outputter
 
 class TestJSON:
 
@@ -18,7 +18,7 @@ class TestJSON:
 
         assert len(outputter.data) == 1
 
-    @patch('tohsaka.outputters.json.open')
+    @patch('outputters.json.open')
     def test_output(self, open):
         outputter = Outputter({
             'filename': 'test'

@@ -1,5 +1,5 @@
 from unittest.mock import patch
-from tohsaka.outputters.rss import Outputter
+from outputters.rss import Outputter
 
 class TestRSS:
     """
@@ -37,7 +37,7 @@ class TestRSS:
 
         assert not outputter.fg.item()
 
-    @patch('tohsaka.outputters.rss.FeedGenerator')
+    @patch('outputters.rss.FeedGenerator')
     def test_output(self, FeedGenerator):
         outputter = Outputter({
             'filename': 'test',

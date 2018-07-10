@@ -1,6 +1,6 @@
 import pytest
 
-from tohsaka.qualifiers.qualifier import Qualifier
+from qualifiers.qualifier import Qualifier
 
 class TestQualifier:
 

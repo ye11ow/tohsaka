@@ -1,8 +1,8 @@
 from unittest.mock import patch
 
-from tohsaka.spells.rest import Spell
+from spells.rest import Spell
 
-from .utils.dummy import DummyResponse
+from utils.dummy import DummyResponse
 
 class TestRestSpell:
 
@@ -20,7 +20,7 @@ class TestRestSpell:
         assert type(name) == str
         assert len(name) > 0
 
-    @patch('tohsaka.spells.rest.requests')
+    @patch('spells.rest.requests')
     def test_go(self, requests):
         requests.get.return_value = DummyResponse('', 200)
 
@@ -36,7 +36,7 @@ class TestRestSpell:
         requests.get.assert_called_once_with(self.ENDPOINT)
 
 
-    @patch('tohsaka.spells.rest.requests')
+    @patch('spells.rest.requests')
     def test_go_failed(self, requests):
         requests.get.return_value = DummyResponse('', 404)
 

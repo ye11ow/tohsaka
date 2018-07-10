@@ -5,7 +5,7 @@ python:
 install:
   - "pip install -r requirements.txt"
 script:
-  - py.test tests/unit --cov=tohsaka --cov-report html --cov-report term
-  - py.test tests/mystic
+  - python -m pytest tests/unit --cov=tohsaka --cov-report html --cov-report term
+  - python -m pytest tests/mystic
 after_success:
   - coveralls

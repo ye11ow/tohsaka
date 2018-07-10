@@ -1,7 +1,7 @@
 from pytest import mark
 from unittest.mock import patch
 
-from tohsaka.outputters.base_outputter import BaseOutputter
+from outputters.base_outputter import BaseOutputter
 
 class DummyOutputter(BaseOutputter):
 
@@ -32,8 +32,8 @@ class TestBaseOutputter:
 
         assert valid == result
 
-    @patch('tohsaka.outputters.base_outputter.os.path.isdir', return_value=False)
-    @patch('tohsaka.outputters.base_outputter.os.makedirs')
+    @patch('outputters.base_outputter.os.path.isdir', return_value=False)
+    @patch('outputters.base_outputter.os.makedirs')
     def test_done(self, makedirs, isdir):
         outputter = DummyOutputter({})
 

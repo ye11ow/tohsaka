@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import patch
 from copy import deepcopy
 
-from tohsaka.tohsaka import Tohsaka
+from tohsaka import Tohsaka
 
 class TestTohsaka:
 
@@ -57,7 +57,7 @@ class TestTohsaka:
                 assert type(code[prop]) == str
                 assert len(code[prop]) > 0
 
-    @patch('tohsaka.tohsaka.Tohsaka.__init__', return_value=None)
+    @patch('tohsaka.Tohsaka.__init__', return_value=None)
     def test_load_spell(self, __init__):
         tohsaka = Tohsaka('rest', {})
         tohsaka.config = {
@@ -75,7 +75,7 @@ class TestTohsaka:
     @pytest.mark.parametrize('outputter_type', [
         'json'
     ])
-    @patch('tohsaka.tohsaka.Tohsaka.__init__', return_value=None)
+    @patch('tohsaka.Tohsaka.__init__', return_value=None)
     def test_load_outputter(self, __init__, outputter_type):
         tohsaka = Tohsaka('test', {})
         tohsaka.config = {
@@ -90,7 +90,7 @@ class TestTohsaka:
         assert hasattr(tohsaka, 'outputter')
         assert callable(tohsaka.outputter.go)
 
-    @patch('tohsaka.tohsaka.Tohsaka.__init__', return_value=None)
+    @patch('tohsaka.Tohsaka.__init__', return_value=None)
     def test_replace_params(self, __init__):
         tohsaka = Tohsaka('test', {})
         tohsaka.config = deepcopy({**self.BASE_PARAMS_DEF, **self.BASE_SPELL_CONFIG})
@@ -105,7 +105,7 @@ class TestTohsaka:
         assert options.get('config4') == '1marap4562marap'
         assert options.get('config5') == '4marap'
 
-    @patch('tohsaka.tohsaka.Tohsaka.__init__', return_value=None)
+    @patch('tohsaka.Tohsaka.__init__', return_value=None)
     def test_replace_params_override_default(self, __init__):
         tohsaka = Tohsaka('test', {})
         tohsaka.config = deepcopy({**self.BASE_PARAMS_DEF, **self.BASE_SPELL_CONFIG})
@@ -119,7 +119,7 @@ class TestTohsaka:
 
         assert options.get('config5') == 'param4'
 
-    @patch('tohsaka.tohsaka.Tohsaka.__init__', return_value=None)
+    @patch('tohsaka.Tohsaka.__init__', return_value=None)
     def test_validate_params(self, __init__):
         tohsaka = Tohsaka('test', {})
         tohsaka.config = deepcopy({**self.BASE_PARAMS_DEF, **self.BASE_SPELL_CONFIG})
@@ -144,7 +144,7 @@ class TestTohsaka:
         assert (result1 & result2 & result3)
 
 
-    @patch('tohsaka.tohsaka.Tohsaka.__init__', return_value=None)
+    @patch('tohsaka.Tohsaka.__init__', return_value=None)
     def test_validate_params_invalid(self, __init__):
         tohsaka = Tohsaka('test', {})
         tohsaka.config = deepcopy({**self.BASE_PARAMS_DEF, **self.BASE_SPELL_CONFIG})

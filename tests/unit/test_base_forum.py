@@ -1,9 +1,9 @@
 from requests_html import HTML
-from tohsaka.spells.forum import Spell
+from spells.forum import Spell
 from unittest.mock import patch
 from unittest.mock import MagicMock
-from .utils.utils import load_html
-from .utils.dummy import DummyResponse
+from utils.utils import load_html
+from utils.dummy import DummyResponse
 
 class DummyItem:
     def __init__(self, html):
@@ -33,8 +33,8 @@ class TestForum:
         assert type(name) == str
         assert len(name) > 0
 
-    @patch('tohsaka.spells.forum.HTMLSession')
-    @patch('tohsaka.spells.forum.Spell.process_item', return_value=True)
+    @patch('spells.forum.HTMLSession')
+    @patch('spells.forum.Spell.process_item', return_value=True)
     def test_go_page(self, process_item, HTMLSession):
         html = HTML(html=load_html('basepage'))
         HTMLSession.return_value.get.return_value = DummyResponse(html)
@@ -50,7 +50,7 @@ class TestForum:
         assert True
 
 
-    @patch('tohsaka.spells.forum.HTMLSession')
+    @patch('spells.forum.HTMLSession')
     def test_go_page_failed_response(self, HTMLSession):
         HTMLSession.return_value.get.return_value = DummyResponse('', 404)
 
@@ -62,7 +62,7 @@ class TestForum:
             assert item is None
 
 
-    @patch('tohsaka.spells.forum.HTMLSession')
+    @patch('spells.forum.HTMLSession')
     def test_process_item(self, HTMLSession):
         html = HTML(html=load_html('basepage'))
         HTMLSession.return_value.get.return_value = DummyResponse(html)
@@ -83,7 +83,7 @@ class TestForum:
         assert result['link'] == 'test'
         assert result['addition'] == None
 
-    @patch('tohsaka.spells.forum.HTMLSession')
+    @patch('spells.forum.HTMLSession')
     def test_process_item_wrong_selector(self, HTMLSession):
         html = HTML(html=load_html('basepage'))
         HTMLSession.return_value.get.return_value = DummyResponse(html)
@@ -111,7 +111,7 @@ class TestForum:
         assert result == None
 
 
-    @patch('tohsaka.spells.forum.Spell._go_page', return_value=['RESULT'])
+    @patch('spells.forum.Spell._go_page', return_value=['RESULT'])
     def test_go_single_page(self, _go_page):
         spell = Spell({
             'entry': 'http://localhost/index'
@@ -123,7 +123,7 @@ class TestForum:
             assert item == 'RESULT'
 
 
-    @patch('tohsaka.spells.forum.Spell._go_page', return_value=['RESULT'])
+    @patch('spells.forum.Spell._go_page', return_value=['RESULT'])
     def test_go_multi_page(self, _go_page):
         PAGES = 2
 
