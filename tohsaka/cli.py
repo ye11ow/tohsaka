@@ -3,7 +3,7 @@ from tohsaka import Tohsaka
 
 
 @click.group()
-def cli():
+def cli(): # pragma: no cover
     """Tohsaka CLI"""
     pass
 
@@ -12,7 +12,7 @@ PRINT_FORMAT = '{0: <16} - {1}'
 PARAM_FORMAT = '{0: <16} - {1: <64}'
 
 @cli.command('list-spells')
-def list_spells(): # pragma: no cover
+def list_spells():
     """List all the available spells"""
     spells = Tohsaka.get_spells()
 
@@ -23,7 +23,7 @@ def list_spells(): # pragma: no cover
 
 
 @cli.command('list-mystic-codes')
-def list_mystic_codes(): # pragma: no cover
+def list_mystic_codes():
     """List all the available Mystic Codes"""
     mystic_codes = Tohsaka.get_mystic_codes()
 
@@ -34,7 +34,7 @@ def list_mystic_codes(): # pragma: no cover
 
 @cli.command('show-mystic-code')
 @click.argument('mystic_code')
-def show_mystic_code(mystic_code): # pragma: no cover
+def show_mystic_code(mystic_code):
     """Show the details of the Mystic Code"""
     mystic_json = Tohsaka.load_mystic_code(mystic_code)
     params = mystic_json.get('params', {})
@@ -64,5 +64,5 @@ def run(mystic_code, config):
     tohsaka.go()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     cli()
