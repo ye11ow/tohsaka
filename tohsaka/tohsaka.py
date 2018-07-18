@@ -5,6 +5,7 @@ import os
 import json
 
 from utils import log_util
+from utils.file_util import load_json
 from qualifiers.qualifier import Qualifier
 from spells import TohsakaException
 
@@ -46,8 +47,7 @@ class Tohsaka:
         mystic = []
 
         for mystic_file in glob(pathjoin(cls.MYSTIC_PATH, '*.json')):
-            with open(mystic_file, 'r') as json_file:
-                mystic_json = json.loads(json_file.read())
+            mystic_json = load_json(mystic_file)
 
             mystic.append({
                 'name': mystic_json.get('name'),
@@ -101,15 +101,7 @@ class Tohsaka:
     def load_mystic_code(cls, mystic_code):
         filepath = pathjoin(cls.MYSTIC_PATH, mystic_code + '.json')
 
-        # load config
-        try:
-            with open(filepath) as mystic_file:
-                mystic_json = json.load(mystic_file)
-
-            return mystic_json
-        except:
-            logger.error('Failed to load mystic code %s. Please check whether "%s" exists.' % (mystic_code, filepath))
-            raise Exception('Mystic code not found')
+        return load_json(filepath)
 
 
     def __init__(self, mystic_code, params):

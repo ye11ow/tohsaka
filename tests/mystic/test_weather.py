@@ -3,6 +3,7 @@ import json
 import os
 from os.path import join as pathjoin
 from tohsaka import Tohsaka
+from utils.file_util import load_json
 
 class TestWeather:
 
@@ -18,8 +19,7 @@ class TestWeather:
         tohsaka.outputter.OUTPUT_FOLDER = tempfile.gettempdir()
         tohsaka.go()
 
-        with open(pathjoin(tohsaka.outputter.OUTPUT_FOLDER, FILENAME + '.json'), 'r') as json_file:
-            result = json.loads(json_file.read())
+        result = load_json(pathjoin(tohsaka.outputter.OUTPUT_FOLDER, FILENAME + '.json'))
 
         assert result
         assert 'city' in result[0]
