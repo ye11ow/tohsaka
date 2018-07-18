@@ -1,5 +1,6 @@
 import click
 from tohsaka import Tohsaka
+from utils.file_util import load_json
 
 
 @click.group()
@@ -10,6 +11,7 @@ def cli(): # pragma: no cover
 
 PRINT_FORMAT = '{0: <16} - {1}'
 PARAM_FORMAT = '{0: <16} - {1: <64}'
+PARAM_INPUT_FORMAT = '{0}: {1}? '
 
 @cli.command('list-spells')
 def list_spells():
@@ -57,10 +59,39 @@ def show_mystic_code(mystic_code):
 
 @cli.command()
 @click.argument('mystic_code')
-@click.argument('config', default={})
+@click.option('--config', default=False, help='config file')
 def run(mystic_code, config):
     """Run a Mystic Code"""
-    tohsaka = Tohsaka(mystic_code, config)
+    mystic_json = Tohsaka.load_mystic_code(mystic_code)
+    params = mystic_json.get('params', {})
+    input_params = {}
+
+    # config file is specified, use the config file as param
+    if config:
+        input_params = load_json(config)
+    # if config is not there but there are params, start wizard
+    # otherwise, run directly
+    elif params:
+        for key, value in params.items():
+            required = value.get('required')
+            if required:
+                name = '(*)' + key
+            else:
+                name = key
+
+            description = value.get('description')
+            if value.get('default'):
+                description += '. (Default: %s)' % value.get('default')
+
+            result = input(PARAM_INPUT_FORMAT.format(name, description))
+
+            if result:
+                input_params[key] = str(result)
+            elif value.get('default'):
+                input_params[key] = value.get('default')
+        print('\n')
+
+    tohsaka = Tohsaka(mystic_code, input_params)
     tohsaka.go()
 
 

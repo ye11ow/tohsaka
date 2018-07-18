@@ -16,8 +16,6 @@ class Tohsaka:
 
     item_per_log = 10
 
-    PARAM_INPUT_FORMAT = '{0}: {1}? '
-
     MYSTIC_PATH = pathjoin(os.path.dirname(os.path.realpath(__file__)), 'mystic')
     SPELL_PATH = pathjoin(os.path.dirname(os.path.realpath(__file__)), 'spells')
     OUTPUTTER_PATH = pathjoin(os.path.dirname(os.path.realpath(__file__)), 'outputters')
@@ -55,40 +53,6 @@ class Tohsaka:
             })
 
         return mystic
-
-
-    @classmethod
-    def run(cls, mystic_code, input_params=None, save=None):
-        mystic_json = cls.load_mystic_code(mystic_code)
-        params = mystic_json.get('params', {})
-
-        if not input_params:
-            input_params = {}
-
-            for key, value in params.items():
-                required = value.get('required')
-                if required:
-                    name = '(*)' + key
-                else:
-                    name = key
-
-                description = value.get('description')
-                if value.get('default'):
-                    description += '. (Default: %s)' % value.get('default')
-
-                result = input(cls.PARAM_INPUT_FORMAT.format(name, description))
-
-                if result:
-                    input_params[key] = str(result)
-                elif value.get('default'):
-                    input_params[key] = value.get('default')
-            print('\n')
-
-            if save:
-                Tohsaka.save(input_params, save)
-
-        tohsaka = Tohsaka(mystic_code, input_params)
-        tohsaka.go()
 
 
     @classmethod
