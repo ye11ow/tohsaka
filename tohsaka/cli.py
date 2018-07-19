@@ -1,4 +1,5 @@
 import click
+import json
 from tohsaka import Tohsaka
 from utils.file_util import load_json
 
@@ -60,7 +61,8 @@ def show_mystic_code(mystic_code):
 @cli.command()
 @click.argument('mystic_code')
 @click.option('--config', default=False, help='config file')
-def run(mystic_code, config):
+@click.option('--save', default=False, help='save the config')
+def run(mystic_code, config, save):
     """Run a Mystic Code"""
     mystic_json = Tohsaka.load_mystic_code(mystic_code)
     params = mystic_json.get('params', {})
@@ -93,6 +95,13 @@ def run(mystic_code, config):
 
     tohsaka = Tohsaka(mystic_code, input_params)
     tohsaka.go()
+
+    if isinstance(save, str):
+        print('Saving the config to %s...' % (save))
+        print('All set.\n')
+
+        with open(save, 'w') as json_file:
+            json_file.write(json.dumps(input_params, indent=4))
 
 
 if __name__ == '__main__': # pragma: no cover
