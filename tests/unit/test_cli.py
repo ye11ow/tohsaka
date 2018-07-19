@@ -1,7 +1,9 @@
+from unittest.mock import patch
 from click.testing import CliRunner
 from cli import list_spells
 from cli import list_mystic_codes
 from cli import show_mystic_code
+from cli import run
 
 
 class TestCli:
@@ -30,3 +32,42 @@ class TestCli:
         assert 'Weather' in result.output
         assert 'appid' in result.output
 
+
+    @patch('cli.Tohsaka.__init__', return_value=None)
+    @patch('cli.Tohsaka.go', return_value=None)
+    def test_run_wizard(self, go, __init__):
+        runner = CliRunner()
+        result = runner.invoke(run, ['stock'], input='splk\nsplk.json\n')
+        assert result.exit_code == 0
+
+        __init__.assert_called_once_with('stock', {
+            'symbol': 'splk',
+            'output_file': 'splk.json'
+        })
+        go.assert_called_once()
+
+    @patch('cli.Tohsaka.__init__', return_value=None)
+    @patch('cli.Tohsaka.go', return_value=None)
+    def test_run_wizard_default(self, go, __init__):
+        runner = CliRunner()
+        result = runner.invoke(run, ['stock'], input='splk\n\n')
+        assert result.exit_code == 0
+
+        __init__.assert_called_once_with('stock', {
+            'symbol': 'splk',
+            'output_file': 'stock'
+        })
+        go.assert_called_once()
+
+
+    @patch('cli.Tohsaka.__init__', return_value=None)
+    @patch('cli.Tohsaka.go', return_value=None)
+    @patch('cli.Tohsaka.load_mystic_code', return_value={})
+    def test_run_no_param(self, load_mystic_code, go, __init__):
+        runner = CliRunner()
+        result = runner.invoke(run, ['stock'], input='splk\n\n')
+        assert result.exit_code == 0
+
+        load_mystic_code.assert_called_once_with('stock')
+        __init__.assert_called_once_with('stock', {})
+        go.assert_called_once()
