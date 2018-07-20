@@ -41,14 +41,6 @@ class TestTohsaka:
         }
     }
 
-    def test_list_spells(self):
-        spells = Tohsaka.get_spells()
-
-        for spell in spells:
-            for prop in ['name', 'intro']:
-                assert type(spell[prop]) == str
-                assert len(spell[prop]) > 0
-
     def test_list_mystic(self):
         codes = Tohsaka.get_mystic_codes()
 

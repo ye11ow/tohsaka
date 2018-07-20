@@ -14,16 +14,6 @@ PRINT_FORMAT = '{0: <16} - {1}'
 PARAM_FORMAT = '{0: <16} - {1: <64}'
 PARAM_INPUT_FORMAT = '{0}: {1}? '
 
-@cli.command('list-spells')
-def list_spells():
-    """List all the available spells"""
-    spells = Tohsaka.get_spells()
-
-    click.echo(PRINT_FORMAT.format('Name', 'Intro'))
-    click.echo('-' * 80)
-    for spell in spells:
-        click.echo(PRINT_FORMAT.format(spell['name'], spell['intro']))
-
 
 @cli.command('list-mystic-codes')
 def list_mystic_codes():
@@ -56,7 +46,6 @@ def show_mystic_code(mystic_code):
             description += '. Default: %s' % value.get('default')
 
         click.echo(PARAM_FORMAT.format(name, description))
-
 
 @cli.command()
 @click.argument('mystic_code')
@@ -102,7 +91,6 @@ def run(mystic_code, config, save):
 
         with open(save, 'w') as json_file:
             json_file.write(json.dumps(input_params, indent=4))
-
 
 if __name__ == '__main__': # pragma: no cover
     cli()

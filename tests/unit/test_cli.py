@@ -1,20 +1,11 @@
 from unittest.mock import patch
 from click.testing import CliRunner
-from cli import list_spells
 from cli import list_mystic_codes
 from cli import show_mystic_code
 from cli import run
 
 
 class TestCli:
-
-    def test_list_spells(self):
-        runner = CliRunner()
-        result = runner.invoke(list_spells, [])
-        assert result.exit_code == 0
-
-        assert 'Forum' in result.output
-        assert 'REST' in result.output
 
     def test_list_mystic_codes(self):
         runner = CliRunner()

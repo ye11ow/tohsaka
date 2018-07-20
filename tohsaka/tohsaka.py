@@ -20,25 +20,6 @@ class Tohsaka:
     SPELL_PATH = pathjoin(os.path.dirname(os.path.realpath(__file__)), 'spells')
     OUTPUTTER_PATH = pathjoin(os.path.dirname(os.path.realpath(__file__)), 'outputters')
 
-    @classmethod
-    def get_spells(cls):
-        spells = []
-
-        for spell_file in glob(pathjoin(cls.SPELL_PATH, '*.py')):
-            spec = importlib.util.spec_from_file_location('Spell', spell_file)
-            mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(mod)
-
-            if not hasattr(mod, 'Spell'):
-                continue
-
-            spells.append({
-                'name': mod.Spell.name(),
-                'intro': mod.Spell.intro(),
-            })
-
-        return spells
-
 
     @classmethod
     def get_mystic_codes(cls):
@@ -53,12 +34,6 @@ class Tohsaka:
             })
 
         return mystic
-
-
-    @classmethod
-    def save(cls, params, filepath):
-        with open(filepath + '.json', 'w') as json_file:
-            json_file.write(json.dumps(params, indent=4))
 
 
     @classmethod
