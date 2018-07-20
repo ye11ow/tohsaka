@@ -2,7 +2,6 @@ import importlib.util
 from glob import glob
 from os.path import join as pathjoin
 import os
-import json
 
 from utils import log_util
 from utils.file_util import load_json

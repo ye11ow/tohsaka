@@ -1,5 +1,5 @@
-import click
 import json
+import click
 from tohsaka import Tohsaka
 from utils.file_util import load_json
 
