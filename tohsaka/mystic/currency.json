@@ -9,7 +9,7 @@
         }
     },
     "outputter": {
-        "type": "JSON",
+        "type": "CSV",
         "options": {
             "filename": "<<output_file>>"
         }
