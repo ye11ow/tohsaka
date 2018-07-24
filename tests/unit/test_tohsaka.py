@@ -98,6 +98,20 @@ class TestTohsaka:
         assert options.get('config5') == '4marap'
 
     @patch('tohsaka.Tohsaka.__init__', return_value=None)
+    def test_replace_params_boolean(self, __init__):
+        tohsaka = Tohsaka('test', {})
+        tohsaka.config = deepcopy({**self.BASE_PARAMS_DEF, **self.BASE_SPELL_CONFIG})
+
+        base_params = self.BASE_PARAMS
+        base_params['param4'] = True
+
+        tohsaka._replace_params(tohsaka.config['spell']['options'], base_params)
+
+        options = tohsaka.config.get('spell').get('options')
+
+        assert options.get('config5') == True
+
+    @patch('tohsaka.Tohsaka.__init__', return_value=None)
     def test_replace_params_override_default(self, __init__):
         tohsaka = Tohsaka('test', {})
         tohsaka.config = deepcopy({**self.BASE_PARAMS_DEF, **self.BASE_SPELL_CONFIG})

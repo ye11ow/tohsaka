@@ -106,7 +106,13 @@ class Tohsaka:
             value = options[key]
             if isinstance(value, str):
                 for param in params:
-                    value = value.replace('<<%s>>' % param, params[param])
+
+                    # support boolean param
+                    if type(params[param]) == type(True):
+                        if value == ('<<%s>>' % param):
+                            value = params[param]
+                    else:
+                        value = value.replace('<<%s>>' % param, params[param])
 
                 options[key] = value
 
