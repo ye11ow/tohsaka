@@ -1,5 +1,6 @@
 import pytest
 from unittest.mock import patch
+from unittest.mock import MagicMock
 from copy import deepcopy
 
 from tohsaka import Tohsaka
@@ -170,3 +171,19 @@ class TestTohsaka:
             tohsaka._validate_params({
                 'key4': 0
             })
+
+    @patch('tohsaka.Qualifier')
+    @patch('tohsaka.Tohsaka.__init__', return_value=None)
+    def test_go_no_item(self, __init__, Qualifier):
+        tohsaka = Tohsaka('test', {})
+        tohsaka.config = None
+        tohsaka.spell = MagicMock()
+        tohsaka.spell.go.return_value = []
+        tohsaka.outputter = MagicMock()
+
+        tohsaka.go()
+
+        Qualifier.assert_called_once()
+        tohsaka.outputter.done.assert_called_once()
+
+
