@@ -23,20 +23,21 @@ class Outputter(BaseOutputter):
         headers = set()
         for item in self.data:
             headers.update(item.keys())
+        headers = sorted(list(headers))
 
-        if not self.append:
-            with open(os.path.join(self.OUTPUT_FOLDER, self.file), 'w') as csvfile:
+        filepath = os.path.join(self.OUTPUT_FOLDER, self.file)
+
+        if (not self.append) or (not os.path.exists(filepath)):
+            with open(filepath, 'w', newline='') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=list(headers))
 
                 writer.writeheader()
-                for item in self.data:
-                    writer.writerow(item)
+                writer.writerows(self.data)
         else:
-            with open(os.path.join(self.OUTPUT_FOLDER, self.file), 'a') as csvfile:
+            with open(filepath, 'a', newline='') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=list(headers))
 
-                for item in self.data:
-                    writer.writerow(item)
+                writer.writerows(self.data)
 
 
     def _add_item(self, item):

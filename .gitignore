@@ -5,3 +5,4 @@ tohsaka.log
 .coverage
 htmlcov/*
 tohsaka/mystic/**/*.*
+tohsaka/output/**/*.*
