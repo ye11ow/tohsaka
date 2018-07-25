@@ -8,11 +8,11 @@ from utils.file_util import load_json
 class TestWeather:
 
     def test_weather(self):
-        FILENAME = 'shanghai'
+        FILENAME = 'vancouver'
         tohsaka = Tohsaka('weather', {
             'appid': os.environ['OPENWEATHER_TOKEN'],
-            'city': 'shanghai',
-            'country': 'cn',
+            'city': 'vancouver',
+            'country': 'ca',
             'output_file': FILENAME
         })
 
