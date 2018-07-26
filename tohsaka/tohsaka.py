@@ -111,6 +111,7 @@ class Tohsaka:
                     if type(params[param]) == type(True):
                         if value == ('<<%s>>' % param):
                             value = params[param]
+                            break
                     else:
                         value = value.replace('<<%s>>' % param, params[param])
 

@@ -77,7 +77,10 @@ def run(mystic_code, config, save):
             result = input(PARAM_INPUT_FORMAT.format(name, description))
 
             if result:
-                input_params[key] = str(result)
+                if value.get('type') == 'boolean':
+                    input_params[key] = str(result).lower() in ['1', 'true', 't']
+                else:
+                    input_params[key]  = str(result)
             elif value.get('default'):
                 input_params[key] = value.get('default')
         print('\n')
