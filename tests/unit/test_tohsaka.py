@@ -186,4 +186,33 @@ class TestTohsaka:
         Qualifier.assert_called_once()
         tohsaka.outputter.done.assert_called_once()
 
+    @patch('tohsaka.Qualifier')
+    @patch('tohsaka.Tohsaka.__init__', return_value=None)
+    def test_go_has_item(self, __init__, Qualifier):
+        tohsaka = Tohsaka('test', {})
+        tohsaka.config = None
+        tohsaka.spell = MagicMock()
+        tohsaka.spell.go.return_value = [1, 2, 3, 4, 5, 6, 7, 8]
+        tohsaka.outputter = MagicMock()
 
+        tohsaka.go()
+
+        Qualifier.assert_called_once()
+        assert Qualifier.return_value.go.call_count == 8
+        tohsaka.outputter.done.assert_called_once()
+
+
+    @patch('tohsaka.Qualifier')
+    @patch('tohsaka.Tohsaka.__init__', return_value=None)
+    def test_go_has_invalid_item(self, __init__, Qualifier):
+        tohsaka = Tohsaka('test', {})
+        tohsaka.config = None
+        tohsaka.spell = MagicMock()
+        tohsaka.spell.go.return_value = [1, 2, 3, 4, {}, 6, None, 8]
+        tohsaka.outputter = MagicMock()
+
+        tohsaka.go()
+
+        Qualifier.assert_called_once()
+        assert Qualifier.return_value.go.call_count == 6
+        tohsaka.outputter.done.assert_called_once()
