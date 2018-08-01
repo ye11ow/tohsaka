@@ -6,3 +6,4 @@ tohsaka.log
 htmlcov/*
 tohsaka/mystic/**/*.*
 tohsaka/output/**/*.*
+tohsaka/tohsaka.egg-info
