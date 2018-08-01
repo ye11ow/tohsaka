@@ -4,10 +4,9 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 
 class BaseOutputter(metaclass=ABCMeta):
 
-    OUTPUT_FOLDER = os.path.join(os.getcwd(), 'output')
-
     def __init__(self, config):
         self.config = config
+        self.output_folder = config.get('folder', os.path.join(os.getcwd(), 'output'))
 
     @abstractmethod
     def _output(self):
@@ -25,8 +24,8 @@ class BaseOutputter(metaclass=ABCMeta):
         return all(field in item for field in self.REQUIRED_FIELDS)
 
     def done(self):
-        if not os.path.isdir(self.OUTPUT_FOLDER):
-            os.makedirs(self.OUTPUT_FOLDER)
+        if not os.path.isdir(self.output_folder):
+            os.makedirs(self.output_folder)
 
         return self._output()
 

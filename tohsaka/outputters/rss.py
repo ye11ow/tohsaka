@@ -36,7 +36,7 @@ class Outputter(BaseOutputter):
         fg.author(name='Tohsaka')
 
     def _output(self):
-        self.fg.atom_file(os.path.join(self.OUTPUT_FOLDER, self.file))
+        self.fg.atom_file(os.path.join(self.output_folder, self.file))
 
 
     def _add_item(self, item):

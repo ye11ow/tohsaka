@@ -25,7 +25,7 @@ class Outputter(BaseOutputter):
             headers.update(item.keys())
         headers = sorted(list(headers))
 
-        filepath = os.path.join(self.OUTPUT_FOLDER, self.file)
+        filepath = os.path.join(self.output_folder, self.file)
 
         if (not self.append) or (not os.path.exists(filepath)):
             with open(filepath, 'w', newline='') as csvfile:

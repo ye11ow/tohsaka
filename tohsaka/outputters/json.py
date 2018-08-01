@@ -19,7 +19,7 @@ class Outputter(BaseOutputter):
         self.data = []
 
     def _output(self):
-        with open(os.path.join(self.OUTPUT_FOLDER, self.file), 'w') as json_file:
+        with open(os.path.join(self.output_folder, self.file), 'w') as json_file:
             json_file.write(json.dumps(self.data, indent=2, sort_keys=True))
 
     def _add_item(self, item):

@@ -13,13 +13,13 @@ class TestWeather:
             'appid': os.environ['OPENWEATHER_TOKEN'],
             'city': 'vancouver',
             'country': 'ca',
-            'output_file': FILENAME
+            'output_file': FILENAME,
+            'folder': tempfile.gettempdir()
         })
 
-        tohsaka.outputter.OUTPUT_FOLDER = tempfile.gettempdir()
         tohsaka.go()
 
-        result = load_json(pathjoin(tohsaka.outputter.OUTPUT_FOLDER, FILENAME + '.json'))
+        result = load_json(pathjoin(tohsaka.outputter.output_folder, FILENAME + '.json'))
 
         assert result
         assert 'city' in result[0]
