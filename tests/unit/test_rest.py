@@ -33,7 +33,7 @@ class TestRestSpell:
         for item in results:
             assert item
 
-        requests.get.assert_called_once_with(self.ENDPOINT)
+        requests.get.assert_called_once_with(self.ENDPOINT, headers=rest.get_headers())
 
 
     @patch('spells.rest.requests')
@@ -49,4 +49,4 @@ class TestRestSpell:
         for item in results:
             assert not item
 
-        requests.get.assert_called_once_with(self.ENDPOINT)
+        requests.get.assert_called_once_with(self.ENDPOINT, headers=rest.get_headers())

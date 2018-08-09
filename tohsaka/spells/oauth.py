@@ -1,8 +1,4 @@
-import requests
 from spells.rest import Spell as BaseRest
-from utils import log_util
-
-logger = log_util.get_logger('OAuth')
 
 
 class Spell(BaseRest):
@@ -20,16 +16,10 @@ class Spell(BaseRest):
     def intro(self):
         return 'Get OAuth data'
 
-    def go(self):
-        endpoint = self.config.get('endpoint')
-        headers = {
-            'X-Access-Token': self.config.get('token'),
-            'X-Client-ID': self.config.get('client_id')
-        }
-        r = requests.get(endpoint, headers=headers)
+    def get_headers(self):
+        headers = BaseRest.get_headers(self)
 
-        if r.status_code == 200:
-            yield r.json()
-        else:
-            logger.warning('Failed to fetch %s with error code %d' % (endpoint, r.status_code))
-            yield None
+        headers['X-Access-Token'] = self.config.get('token')
+        headers['X-Client-ID'] = self.config.get('client_id')
+
+        return headers

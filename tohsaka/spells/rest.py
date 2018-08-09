@@ -20,9 +20,15 @@ class Spell(BaseSpell):
     def intro(self):
         return 'Get REST data'
 
+    def get_headers(self):
+        return {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+
     def go(self):
         endpoint = self.config.get('endpoint')
-        r = requests.get(endpoint)
+        r = requests.get(endpoint, headers=self.get_headers())
 
         if r.status_code == 200:
             yield r.json()
