@@ -2,6 +2,7 @@ import json
 import click
 from tohsaka import Tohsaka
 from utils.file_util import load_json
+import utils.log_util as log_util
 
 
 @click.group()
@@ -51,7 +52,13 @@ def show_mystic_code(mystic_code):
 @click.argument('mystic_code')
 @click.option('--config', default=False, help='config file')
 @click.option('--save', default=False, help='save the config')
-def run(mystic_code, config, save):
+@click.option('--log', default=False, help='the path of the log file')
+def run(mystic_code, config, save, log):
+    if log:
+        log_util.set_file_logger(log)
+    else:
+        log_util.set_std_logger()
+
     """Run a Mystic Code"""
     mystic_json = Tohsaka.load_mystic_code(mystic_code)
     params = mystic_json.get('params', {})

@@ -86,7 +86,14 @@ class Spell(BaseSpell):
         link = item.absolute_links.pop()
 
         session = HTMLSession()
-        req = session.get(link)
+
+        try:
+            req = session.get(link)
+        except Exception as err:
+            logger.warning('failed to get link %s', link)
+            logger.warning(str(err))
+
+            return {}
 
         try:
             title = req.html.find(self.config.get('titleSelector'), first=True).text
@@ -96,6 +103,7 @@ class Spell(BaseSpell):
         except Exception as err:
             logger.warning('failed to process url %s', req.html.url)
             logger.warning(str(err))
+
             return {}
 
         response = {
