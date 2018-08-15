@@ -51,7 +51,8 @@ class TestForum:
 
 
     @patch('spells.forum.HTMLSession')
-    def test_go_page_failed_response(self, HTMLSession):
+    @patch('spells.forum.Spell._dedup', return_value=False)
+    def test_go_page_failed_response(self, _dedup, HTMLSession):
         HTMLSession.return_value.get.return_value = DummyResponse('', 404)
 
         spell = self._create_spell()
@@ -61,9 +62,28 @@ class TestForum:
         for item in result:
             assert item is None
 
+    @patch('spells.forum.HTMLSession')
+    @patch('spells.forum.Spell._dedup', return_value=True)
+    def test_go_page_dedupped(self, _dedup, HTMLSession):
+        html = HTML(html=load_html('basepage'))
+        HTMLSession.return_value.get.return_value = DummyResponse(html)
+
+        spell = self._create_spell({
+            'titleSelector': '.title',
+            'dateSelector': '.date',
+            'contentSelector': '.description'
+        })
+
+        item = MagicMock()
+        item.absolute_links = ['test']
+        result = spell.process_item(item)
+
+        assert result == {}
+
 
     @patch('spells.forum.HTMLSession')
-    def test_process_item(self, HTMLSession):
+    @patch('spells.forum.Spell._dedup', return_value=False)
+    def test_process_item(self, _dedup, HTMLSession):
         html = HTML(html=load_html('basepage'))
         HTMLSession.return_value.get.return_value = DummyResponse(html)
 
@@ -84,7 +104,8 @@ class TestForum:
         assert result['addition'] == None
 
     @patch('spells.forum.HTMLSession')
-    def test_process_item_wrong_selector(self, HTMLSession):
+    @patch('spells.forum.Spell._dedup', return_value=False)
+    def test_process_item_wrong_selector(self, _dedup, HTMLSession):
         html = HTML(html=load_html('basepage'))
         HTMLSession.return_value.get.return_value = DummyResponse(html)
 
