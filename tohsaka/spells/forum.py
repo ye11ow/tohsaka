@@ -39,7 +39,7 @@ class Spell(BaseSpell):
         return None
 
 
-    def _go_page(self, url):
+    def _get_items_from_page(self, url):
         session = HTMLSession()
         req = session.get(url)
 
@@ -57,19 +57,27 @@ class Spell(BaseSpell):
 
         logger.debug('%d items detected in the page', len(items))
 
-        for item in items:
-            response = self.process_item(item)
-            yield response
+        return items
 
 
-    def _dedup(self, link):
+    def _cached(self, link):
         filename = hashlib.md5(link.encode('utf-8')).hexdigest()
 
         return file_util.dedup(os.path.join(self.temp_dir, filename))
 
 
+    def _get_links(self, items):
+        links = []
+
+        items = list(filter(lambda x: len(x.absolute_links) == 1 and not self._cached(x.absolute_links.pop()), items))
+
+        return list(map(lambda x: x.absolute_links.pop(), items))
+
+
     def go(self):
         page_param = self.config.get('page_param', None)
+
+        items = []
 
         if page_param:
             page_base_url = self.config.get('entry') + '&' + page_param + '='
@@ -78,26 +86,19 @@ class Spell(BaseSpell):
             for i in range(pages):
                 logger.debug('Process page %d/%d', i + 1, pages)
                 page_url = page_base_url + str(i + 1)
-                results = self._go_page(page_url)
-                for item in results:
-                    yield item
+                items += self._get_items_from_page(page_url)
         else:
-            results = self._go_page(self.config.get('entry'))
+            items += self._get_items_from_page(self.config.get('entry'))
 
-        for item in results:
-            yield item
+        links = self._get_links(items)
+
+        logger.info('%d items detected. %d links available', len(items), len(links))
+        for link in links:
+            response = self.process_item(link)
+            yield response
 
 
-    def process_item(self, item):
-        if len(item.absolute_links) != 1:
-            logger.error('More than one absolute links found inside item')
-            return
-
-        link = item.absolute_links.pop()
-
-        if self._dedup(link):
-            return {}
-
+    def process_item(self, link):
         session = HTMLSession()
 
         try:

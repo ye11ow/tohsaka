@@ -129,7 +129,7 @@ class Tohsaka:
 
         for item in self.spell.go():
             if item_count > 0 and item_count % self.item_per_log == 0:
-                logger.info('%d item processed. Success %d, failure %d, filtered %d.' % (item_count, item_count - failed_count - filtered_count, failed_count, filtered_count))
+                logger.info('%d items processed. Success %d, failure %d, filtered %d.' % (item_count, item_count - failed_count - filtered_count, failed_count, filtered_count))
 
             item_count += 1
 
@@ -144,6 +144,6 @@ class Tohsaka:
             self.outputter.go(item)
 
         logger.info('GO Tohsaka!')
-        logger.info('%d item processed. Success %d, failure %d, filtered %d.' % (item_count, item_count - failed_count - filtered_count, failed_count, filtered_count))
+        logger.info('%d items processed. Success %d, failure %d, filtered %d.' % (item_count, item_count - failed_count - filtered_count, failed_count, filtered_count))
 
         self.outputter.done()
