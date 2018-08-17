@@ -48,7 +48,7 @@ class Spell(BaseSpell):
 
         if req.status_code != 200:
             logger.warning('Error when fetching url %s, with response code %d', req.url, req.status_code)
-            return
+            return []
 
         items = req.html.find(self.config.get('itemListSelector'))
 
