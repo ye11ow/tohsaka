@@ -63,7 +63,7 @@ class Spell(BaseSpell):
     def _cached(self, link):
         filename = hashlib.md5(link.encode('utf-8')).hexdigest()
 
-        return file_util.dedup(os.path.join(self.temp_dir, filename))
+        return file_util.touch(os.path.join(self.temp_dir, filename))
 
 
     def _get_links(self, items):

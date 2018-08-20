@@ -57,24 +57,6 @@ class TestForum:
 
         assert len(result) == 0
 
-    # @patch('spells.forum.HTMLSession')
-    # @patch('spells.forum.Spell._cached', return_value=True)
-    # def test_get_items_from_page_cached(self, _cached, HTMLSession):
-    #     html = HTML(html=load_html('basepage'))
-    #     HTMLSession.return_value.get.return_value = DummyResponse(html)
-
-    #     spell = self._create_spell({
-    #         'titleSelector': '.title',
-    #         'dateSelector': '.date',
-    #         'contentSelector': '.description'
-    #     })
-
-    #     item = MagicMock()
-    #     item.absolute_links = ['test']
-    #     result = spell.process_item(item)
-
-    #     assert result == {}
-
 
     @patch('spells.forum.HTMLSession')
     def test_process_item(self, HTMLSession):
@@ -94,7 +76,7 @@ class TestForum:
         assert result['pubDate'] == 'date'
         assert result['description'] == '<div class="description">description</div>'
         assert result['link'] == LINK
-        assert result['addition'] == None
+        assert result['addition'] is None
 
     @patch('spells.forum.HTMLSession')
     def test_process_item_wrong_selector(self, HTMLSession):
@@ -111,43 +93,48 @@ class TestForum:
 
         assert result == {}
 
+    @patch('spells.forum.HTMLSession')
+    @patch('spells.forum.file_util.touch', return_value=False)
+    def test_go(self, touch, HTMLSession):
+        html = HTML(html=load_html('basepage'))
+        HTMLSession.return_value.get.return_value = DummyResponse(html)
 
-    # def test_process_item_more_links(self):
-    #     item = MagicMock()
-    #     item.absolute_links = ['test', 'lin']
+        spell = self._create_spell({
+            'itemListSelector': '#unselect',
+            'titleSelector': '.title',
+            'dateSelector': '.date',
+            'contentSelector': '.description'
+        })
 
-    #     spell = self._create_spell()
-    #     result = spell.process_item(item)
+        result = spell.go()
 
-    #     assert result == None
+        count = 0
+        for item in result:
+            count += 1
+            assert item
 
+        assert count == 1
 
-    # @patch('spells.forum.Spell._get_items_from_page', return_value=['RESULT'])
-    # @patch('spells.forum.Spell.get_links', return_value=['TEST_LINK'])
-    # @patch('spells.forum.Spell.get_links', return_value=['TEST_LINK'])
-    # def test_go_single_page(self, _get_items_from_page):
-    #     spell = Spell({
-    #         'entry': 'http://localhost/index'
-    #     })
+    @patch('spells.forum.HTMLSession')
+    @patch('spells.forum.file_util.touch', return_value=False)
+    def test_go_multi_page(self, touch, HTMLSession):
+        html = HTML(html=load_html('basepage'))
+        HTMLSession.return_value.get.return_value = DummyResponse(html)
 
-    #     result = spell.go()
+        spell = self._create_spell({
+            'page_param': 'page',
+            'pages': '5',
+            'itemListSelector': '#unselect',
+            'titleSelector': '.title',
+            'dateSelector': '.date',
+            'contentSelector': '.description'
+        })
 
-    #     for item in result:
-    #         assert item == 'RESULT'
+        result = spell.go()
 
+        count = 0
+        for item in result:
+            count += 1
+            assert item
 
-    # @patch('spells.forum.Spell._get_items_from_page', return_value=['RESULT'])
-    # def test_go_multi_page(self, _get_items_from_page):
-    #     PAGES = 2
-
-    #     spell = self._create_spell({
-    #         'page_param': 'page',
-    #         'pages': PAGES
-    #     })
-
-    #     result = spell.go()
-
-    #     for item in result:
-    #         assert item == 'RESULT'
-
-    #     assert _get_items_from_page.call_count == PAGES
+        assert count == 5

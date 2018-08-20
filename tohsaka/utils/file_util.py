@@ -22,7 +22,12 @@ def get_temp_dir():
     return path
 
 
-def dedup(path):
+def touch(path):
+    """Touch the file if it does not exist. Return the existence of the file
+
+    Arguments:
+        path {[string]} -- path of the file
+    """
     if os.path.isfile(path):
         return True
     else:
