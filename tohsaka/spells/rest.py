@@ -2,7 +2,7 @@ import requests
 from spells.base_spell import BaseSpell
 from utils import log_util
 
-logger = log_util.get_logger('Rest')
+logger = log_util.get_logger('tohsaka.rest')
 
 
 class Spell(BaseSpell):

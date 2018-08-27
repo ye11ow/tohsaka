@@ -1,8 +1,11 @@
 import json
 import tempfile
 import os
+from utils import log_util
 from pathlib import Path
 
+
+logger = log_util.get_logger('tohsaka.file_util')
 
 def load_json(filepath):
     result = None
@@ -18,6 +21,8 @@ def get_temp_dir():
     path = os.path.join(tempfile.gettempdir(), 'tohsaka')
     if not os.path.isdir(path):
         os.mkdir(path)
+
+    logger.debug('Using temp folder %s', path)
 
     return path
 

@@ -1,6 +1,6 @@
 from utils.log_util import get_logger
 
-logger = get_logger('qualifier')
+logger = get_logger('tohsaka.qualifier')
 
 class Qualifier:
 

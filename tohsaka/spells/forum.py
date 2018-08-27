@@ -6,7 +6,7 @@ from spells.base_spell import BaseSpell
 from utils import log_util
 from utils import file_util
 
-logger = log_util.get_logger('tohsaka')
+logger = log_util.get_logger('tohsaka.ourm')
 
 
 class Spell(BaseSpell):
