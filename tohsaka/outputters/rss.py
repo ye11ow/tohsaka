@@ -1,18 +1,21 @@
 import os
+import hashlib
 from datetime import datetime
 from feedgen.feed import FeedGenerator
 import pytz
 from dateutil import parser
+from utils import file_util
+from utils import log_util
 
 from outputters.base_outputter import BaseOutputter
 
+logger = log_util.get_logger('tohsaka.rss')
 
 class Outputter(BaseOutputter):
 
     @property
     def REQUIRED_FIELDS(self):
         return ['description', 'pubDate', 'title']
-
 
     def __init__(self, config):
         BaseOutputter.__init__(self, config)
@@ -21,10 +24,13 @@ class Outputter(BaseOutputter):
         self.title = config.get('title', 'Sample RSS')
         self.description = config.get('description', 'Sample')
         self.base_link = config.get('host')
+        self.temp_dir = file_util.get_temp_dir()
 
         self.fg = FeedGenerator()
         self._create_feed()
 
+        self.item_count = 0
+        self.filtered_count = 0
 
     def _create_feed(self):
         fg = self.fg
@@ -35,9 +41,22 @@ class Outputter(BaseOutputter):
         fg.description(self.description)
         fg.author(name='Tohsaka')
 
-    def _output(self):
-        self.fg.atom_file(os.path.join(self.output_folder, self.file))
+    def _valid(self, item):
+        self.item_count += 1
+        valid = BaseOutputter._valid(self, item)
 
+        if valid:
+            filename = hashlib.md5(item.get('link').encode('utf-8')).hexdigest()
+            valid = not file_util.touch(os.path.join(self.temp_dir, filename))
+            if not valid:
+                self.filtered_count += 1
+
+        return valid
+
+    def _output(self):
+        filename = os.path.join(self.output_folder, self.file)
+        logger.info('Output to file %s. Total items %d, filtered %d', filename, self.item_count, self.filtered_count)
+        self.fg.atom_file(filename)
 
     def _add_item(self, item):
         title = item.get('title')

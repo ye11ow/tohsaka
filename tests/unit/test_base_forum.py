@@ -94,8 +94,7 @@ class TestForum:
         assert result == {}
 
     @patch('spells.forum.HTMLSession')
-    @patch('spells.forum.file_util.touch', return_value=False)
-    def test_go(self, touch, HTMLSession):
+    def test_go(self, HTMLSession):
         html = HTML(html=load_html('basepage'))
         HTMLSession.return_value.get.return_value = DummyResponse(html)
 
@@ -116,8 +115,7 @@ class TestForum:
         assert count == 1
 
     @patch('spells.forum.HTMLSession')
-    @patch('spells.forum.file_util.touch', return_value=False)
-    def test_go_multi_page(self, touch, HTMLSession):
+    def test_go_multi_page(self, HTMLSession):
         html = HTML(html=load_html('basepage'))
         HTMLSession.return_value.get.return_value = DummyResponse(html)
 

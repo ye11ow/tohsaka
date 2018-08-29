@@ -1,10 +1,8 @@
-import hashlib
 import os
 
 from requests_html import HTMLSession
 from spells.base_spell import BaseSpell
 from utils import log_util
-from utils import file_util
 
 logger = log_util.get_logger('tohsaka.ourm')
 
@@ -15,7 +13,6 @@ class Spell(BaseSpell):
 
     def __init__(self, config):
         BaseSpell.__init__(self, config)
-        self.temp_dir = file_util.get_temp_dir()
 
     @classmethod
     def name(cls):
@@ -60,16 +57,8 @@ class Spell(BaseSpell):
         return items
 
 
-    def _cached(self, link):
-        filename = hashlib.md5(link.encode('utf-8')).hexdigest()
-
-        return file_util.touch(os.path.join(self.temp_dir, filename))
-
-
     def _get_links(self, items):
-        links = []
-
-        items = list(filter(lambda x: len(x.absolute_links) == 1 and not self._cached(x.absolute_links.pop()), items))
+        items = list(filter(lambda x: len(x.absolute_links) == 1, items))
 
         return list(map(lambda x: x.absolute_links.pop(), items))
 
