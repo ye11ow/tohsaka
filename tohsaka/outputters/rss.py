@@ -1,5 +1,6 @@
 import os
 import hashlib
+import time
 from datetime import datetime
 from feedgen.feed import FeedGenerator
 import pytz
@@ -10,6 +11,8 @@ from utils import log_util
 from outputters.base_outputter import BaseOutputter
 
 logger = log_util.get_logger('tohsaka.rss')
+
+SECONDS_OF_DAY = 60*60*24
 
 class Outputter(BaseOutputter):
 
@@ -49,14 +52,32 @@ class Outputter(BaseOutputter):
             filename = hashlib.md5(item.get('link').encode('utf-8')).hexdigest()
             valid = not file_util.touch(os.path.join(self.temp_dir, filename))
             if not valid:
+                logger.debug('%s is filtered', item.get('title'))
                 self.filtered_count += 1
 
         return valid
+
+    def _clear_obsolete_cache(self, days):
+        files = os.listdir(self.temp_dir)
+        now = time.time()
+        removed_count = 0
+
+        for f in files:
+            filename = os.path.join(self.temp_dir, f)
+            diff = now - os.path.getmtime(filename)
+            if diff > SECONDS_OF_DAY * days:
+                os.remove(filename)
+                removed_count +=1
+
+        if removed_count > 0:
+            logger.info('Removing %d obsolete cache', removed_count)
 
     def _output(self):
         filename = os.path.join(self.output_folder, self.file)
         logger.info('Output to file %s. Total items %d, filtered %d', filename, self.item_count, self.filtered_count)
         self.fg.atom_file(filename)
+
+        self._clear_obsolete_cache(0)
 
     def _add_item(self, item):
         title = item.get('title')
