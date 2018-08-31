@@ -77,7 +77,7 @@ class Outputter(BaseOutputter):
         logger.info('Output to file %s. Total items %d, filtered %d', filename, self.item_count, self.filtered_count)
         self.fg.atom_file(filename)
 
-        self._clear_obsolete_cache(0)
+        self._clear_obsolete_cache(14)
 
     def _add_item(self, item):
         title = item.get('title')
