@@ -26,6 +26,7 @@ class Outputter(BaseOutputter):
         self.file = config.get('filename', 'output') + '.xml'
         self.title = config.get('title', 'Sample RSS')
         self.description = config.get('description', 'Sample')
+        self.cache = config.get('cache', False)
         self.base_link = config.get('host')
         self.temp_dir = file_util.get_temp_dir()
 
@@ -47,6 +48,9 @@ class Outputter(BaseOutputter):
     def _valid(self, item):
         self.item_count += 1
         valid = BaseOutputter._valid(self, item)
+
+        if not self.cache:
+            return valid
 
         if valid:
             filename = hashlib.md5(item.get('link').encode('utf-8')).hexdigest()
@@ -77,20 +81,22 @@ class Outputter(BaseOutputter):
         logger.info('Output to file %s. Total items %d, filtered %d', filename, self.item_count, self.filtered_count)
         self.fg.atom_file(filename)
 
-        self._clear_obsolete_cache(14)
+        if self.cache:
+            self._clear_obsolete_cache(14)
 
     def _add_item(self, item):
         title = item.get('title')
         description = item.get('description')
         link = item.get('link')
         pub_date = item.get('pubDate')
+        guid = item.get('id', link)
 
         entry = self.fg.add_entry()
 
         entry.title(title)
         entry.link(href=link)
         entry.content(content=description, type='html')
-        entry.guid(link)
+        entry.guid(guid)
         try:
             pub_date = parser.parse(pub_date).replace(tzinfo=pytz.timezone('Asia/Shanghai'))
         except:

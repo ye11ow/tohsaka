@@ -63,6 +63,10 @@ class Spell(BaseSpell):
         return list(map(lambda x: x.absolute_links.pop(), items))
 
 
+    def _get_id(self, link):
+        return link
+
+
     def go(self):
         page_param = self.config.get('page_param', None)
 
@@ -99,6 +103,7 @@ class Spell(BaseSpell):
             return {}
 
         try:
+            uid = self._get_id(link)
             title = req.html.find(self.config.get('titleSelector'), first=True).text
             pub_date = self.get_date(req.html.find(self.config.get('dateSelector'), first=True))
             description = self.get_description(req.html.find(self.config.get('contentSelector'), first=True))
@@ -110,6 +115,7 @@ class Spell(BaseSpell):
             return {}
 
         response = {
+            'id': uid,
             'link': link,
             'title': title,
             'description': description,
