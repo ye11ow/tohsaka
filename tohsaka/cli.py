@@ -48,28 +48,39 @@ def show_mystic_code(mystic_code):
 
         click.echo(PARAM_FORMAT.format(name, description))
 
+
 @cli.command()
-@click.argument('mystic_code')
-@click.option('--config', default=False, help='config file')
-@click.option('--save', default=False, help='save the config')
+@click.argument('profile', type=click.Path(exists=True))
 @click.option('--log', default=False, help='the path of the log file')
-def run(mystic_code, config, save, log):
+def load(profile, log):
     if log:
         log_util.set_file_logger(log)
     else:
         log_util.set_std_logger()
+
+    input_params = load_json(profile)
+
+    mystic = input_params.get('mystic')
+
+    if mystic:
+        tohsaka = Tohsaka(mystic, input_params)
+        tohsaka.go()
+
+
+@cli.command()
+@click.argument('mystic_code')
+@click.option('--save', default=False, help='save the config')
+def run(mystic_code, save):
+    log_util.set_std_logger()
 
     """Run a Mystic Code"""
     mystic_json = Tohsaka.load_mystic_code(mystic_code)
     params = mystic_json.get('params', {})
     input_params = {}
 
-    # config file is specified, use the config file as param
-    if config:
-        input_params = load_json(config)
-    # if config is not there but there are params, start wizard
+    # if there are params, start wizard
     # otherwise, run directly
-    elif params:
+    if params:
         for key, value in params.items():
             required = value.get('required')
             if required:
