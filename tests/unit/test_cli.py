@@ -1,8 +1,11 @@
+import json
+
 from unittest.mock import patch
 from click.testing import CliRunner
 from cli import list_mystic_codes
 from cli import show_mystic_code
 from cli import run
+from cli import load
 
 
 class TestCli:
@@ -62,3 +65,22 @@ class TestCli:
         load_mystic_code.assert_called_once_with('stock')
         __init__.assert_called_once_with('stock', {})
         go.assert_called_once()
+
+    @patch('cli.Tohsaka.__init__', return_value=None)
+    @patch('cli.Tohsaka.go', return_value=None)
+    def test_load(self, go, __init__):
+        runner = CliRunner()
+
+        profile = {
+            'mystic': 'my_mystic',
+            'options': 'options'
+        }
+
+        with runner.isolated_filesystem():
+            with open('profile', 'w') as f:
+                f.write(json.dumps(profile))
+
+            result = runner.invoke(load, ['profile'])
+
+            __init__.assert_called_once_with('my_mystic', {'options': 'options'})
+            go.assert_called_once()

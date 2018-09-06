@@ -60,10 +60,10 @@ def load(profile, log):
 
     input_params = load_json(profile)
 
-    mystic = input_params.get('mystic')
-
-    if mystic:
-        tohsaka = Tohsaka(mystic, input_params)
+    if not 'mystic' in input_params:
+        click.echo('Invalid profile')
+    else:
+        tohsaka = Tohsaka(input_params.pop('mystic'), input_params)
         tohsaka.go()
 
 
@@ -101,14 +101,14 @@ def run(mystic_code, save):
                     input_params[key]  = str(result)
             elif value.get('default'):
                 input_params[key] = value.get('default')
-        print('\n')
+        click.echo('\n')
 
     tohsaka = Tohsaka(mystic_code, input_params)
     tohsaka.go()
 
     if isinstance(save, str):
-        print('Saving the config to %s...' % (save))
-        print('All set.\n')
+        click.echo('Saving the config to %s...' % (save))
+        click.echo('All set.\n')
 
         with open(save, 'w') as json_file:
             json_file.write(json.dumps(input_params, indent=4))
