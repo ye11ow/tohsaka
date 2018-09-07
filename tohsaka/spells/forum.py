@@ -57,12 +57,6 @@ class Spell(BaseSpell):
         return items
 
 
-    def _get_links(self, items):
-        items = list(filter(lambda x: len(x.absolute_links) == 1, items))
-
-        return list(map(lambda x: x.absolute_links.pop(), items))
-
-
     def _get_id(self, link):
         return link
 
@@ -83,15 +77,20 @@ class Spell(BaseSpell):
         else:
             items += self._get_items_from_page(self.config.get('entry'))
 
-        links = self._get_links(items)
+        logger.info('%d items detected.', len(items))
 
-        logger.info('%d items detected. %d links available', len(items), len(links))
-        for link in links:
-            response = self.process_item(link)
+        for item in items:
+            response = self.process_item(item)
             yield response
 
 
-    def process_item(self, link):
+    def process_item(self, item):
+        if len(item.absolute_links) != 1:
+            logger.warning('Number of link is not 1', item)
+            return {}
+
+        link = item.absolute_links.pop()
+
         session = HTMLSession()
 
         try:
