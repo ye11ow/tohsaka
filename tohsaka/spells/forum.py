@@ -13,6 +13,7 @@ class Spell(BaseSpell):
 
     def __init__(self, config):
         BaseSpell.__init__(self, config)
+        self.headers = config.get('headers', {})
 
     @classmethod
     def name(cls):
@@ -38,7 +39,7 @@ class Spell(BaseSpell):
 
     def _get_items_from_page(self, url):
         session = HTMLSession()
-        req = session.get(url)
+        req = session.get(url,headers=self.headers)
 
         if req.history:
             logger.warning('Redirected to %s', req.url)
