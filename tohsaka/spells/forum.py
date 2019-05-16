@@ -4,7 +4,7 @@ from requests_html import HTMLSession
 from spells.base_spell import BaseSpell
 from utils import log_util
 
-logger = log_util.get_logger('tohsaka.ourm')
+logger = log_util.get_logger('tohsaka.fourm')
 
 
 class Spell(BaseSpell):
@@ -42,18 +42,18 @@ class Spell(BaseSpell):
         req = session.get(url,headers=self.headers)
 
         if req.history:
-            logger.warning('Redirected to %s', req.url)
+            logger.warning(f'Redirected to {req.url}')
 
         if req.status_code != 200:
-            logger.warning('Error when fetching url %s, with response code %d', req.url, req.status_code)
+            logger.warning(f'Error when fetching url {req.url}, with response code {req.status_code}')
             return []
 
         items = req.html.find(self.config.get('itemListSelector'))
 
         if len(items) == 0:
-            logger.warning('Nothing found in url %s', req.url)
+            logger.warning(f'Nothing found in url {req.url}')
 
-        logger.debug('%d items detected in the page', len(items))
+        logger.debug(f'{len(items)} items detected in the page')
 
         return items
 
@@ -72,13 +72,13 @@ class Spell(BaseSpell):
             pages = int(self.config.get('pages', 1))
 
             for i in range(pages):
-                logger.debug('Process page %d/%d', i + 1, pages)
+                logger.debug(f'Process page {i + 1}/{pages}')
                 page_url = page_base_url + str(i + 1)
                 items += self._get_items_from_page(page_url)
         else:
             items += self._get_items_from_page(self.config.get('entry'))
 
-        logger.info('%d items detected.', len(items))
+        logger.info(f'{len(items)} items detected.')
 
         for item in items:
             response = self.process_item(item)
@@ -97,7 +97,7 @@ class Spell(BaseSpell):
         try:
             req = session.get(link)
         except Exception as err:
-            logger.warning('failed to get link %s', link)
+            logger.warning(f'failed to get link {link}')
             logger.warning(str(err))
 
             return {}
@@ -109,7 +109,7 @@ class Spell(BaseSpell):
             description = self.get_description(req.html.find(self.config.get('contentSelector'), first=True))
             addition = self.get_addition(req.html)
         except Exception as err:
-            logger.warning('failed to process url %s', req.html.url)
+            logger.warning(f'failed to process url {req.html.url}')
             logger.warning(str(err))
 
             return {}

@@ -13,7 +13,7 @@ def load_json(filepath):
         with open(filepath) as json_file:
             result = json.load(json_file)
     except:
-        raise Exception('Failed to load file %s.' % (filepath))
+        raise Exception(f'Failed to load file {filepath}.')
 
     return result
 
@@ -22,7 +22,7 @@ def get_temp_dir():
     if not os.path.isdir(path):
         os.mkdir(path)
 
-    logger.debug('Using temp folder %s', path)
+    logger.debug(f'Using temp folder {path}')
 
     return path
 

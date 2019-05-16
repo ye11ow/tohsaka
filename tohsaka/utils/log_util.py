@@ -19,6 +19,6 @@ def _set_logger():
 
 def get_logger(name):
     logger = logging.getLogger(name)
-    logger.debug('start logging %s' % name)
+    logger.debug(f'start logging {name}')
 
     return logger

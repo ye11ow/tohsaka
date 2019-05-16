@@ -25,10 +25,10 @@ class Qualifier:
             if value > target_value:
                 return True
             else:
-                logger.debug('%s doesnt pass the qualify %d/%d' % (item.get('title'), value, target_value))
+                logger.debug(f'{item.get("title")} doesnt pass the qualify {value}/{target_value}')
                 return False
         else:
-            raise Exception('Unimplemented condition type %s. Qualify params: %s' % (condition, str(self.config)))
+            raise Exception(f'Unimplemented condition type {condition}. Qualify params: {self.config}')
 
 
     def go(self, item):

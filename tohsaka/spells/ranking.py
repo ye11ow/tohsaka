@@ -27,7 +27,7 @@ class Spell(BaseSpell):
             description = self.get_description(item.find(self.config.get('contentSelector'), first=True))
             addition = self.get_addition(item)
         except Exception as err:
-            logger.warning('failed to process url %s', item)
+            logger.warning(f'failed to process url {item}')
             logger.warning(str(err))
 
             return {}

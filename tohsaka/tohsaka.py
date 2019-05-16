@@ -46,7 +46,7 @@ class Tohsaka:
         logger.info('Tohsaka start!')
 
         self.config = self.load_mystic_code(mystic_code)
-        logger.info('Loaded Mystic Code %s' % mystic_code)
+        logger.info(f'Loaded Mystic Code {mystic_code}')
 
         self._validate_params(params)
 
@@ -59,9 +59,9 @@ class Tohsaka:
         module_type = self.config.get(lower_name).get('type')
 
         if module_type == 'Custom':
-            module_path = pathjoin(self.MYSTIC_PATH, mystic_code, '%s.py' % (lower_name))
+            module_path = pathjoin(self.MYSTIC_PATH, mystic_code, f'{lower_name}.py')
         else:
-            module_path = pathjoin(base_path, '%s.py' % module_type.lower())
+            module_path = pathjoin(base_path, f'{module_type.lower()}.py')
 
         try:
             spec = importlib.util.spec_from_file_location(module_name, module_path)
@@ -76,7 +76,7 @@ class Tohsaka:
         except TohsakaException as err:
             raise err
         except Exception:
-            logger.error('Failed to import the module %s from %s' % (module_name, module_path))
+            logger.error(f'Failed to import the module {module_name} from {module_path}')
             raise Exception('Failed to import module')
 
 
@@ -87,7 +87,7 @@ class Tohsaka:
 
         for key in required:
             if not key in params:
-                raise Exception('Required parameter "%s" does not exist. Current params [%s].' % (key, ', '.join(params.keys())))
+                raise Exception(f'Required parameter "{key}" does not exist. Current params [{", ".join(params.keys())}].')
 
         return True
 
@@ -109,11 +109,11 @@ class Tohsaka:
 
                     # support boolean param
                     if type(params[param]) == type(True):
-                        if value == ('<<%s>>' % param):
+                        if value == (f'<<{param}>>'):
                             value = params[param]
                             break
                     else:
-                        value = value.replace('<<%s>>' % param, params[param])
+                        value = value.replace(f'<<{param}>>', params[param])
 
                 options[key] = value
 
@@ -129,7 +129,7 @@ class Tohsaka:
 
         for item in self.spell.go():
             if item_count > 0 and item_count % self.item_per_log == 0:
-                logger.info('%d items processed. Success %d, failure %d, filtered %d.' % (item_count, item_count - failed_count - filtered_count, failed_count, filtered_count))
+                logger.info(f'{item_count} items processed. Success {item_count - failed_count - filtered_count}, failure {failed_count}, filtered {filtered_count}.')
 
             item_count += 1
 
@@ -144,6 +144,6 @@ class Tohsaka:
             self.outputter.go(item)
 
         logger.info('GO Tohsaka!')
-        logger.info('%d items processed. Success %d, failure %d, filtered %d.' % (item_count, item_count - failed_count - filtered_count, failed_count, filtered_count))
+        logger.info(f'{item_count} items processed. Success {item_count - failed_count - filtered_count}, failure {failed_count}, filtered {filtered_count}.')
 
         self.outputter.done()

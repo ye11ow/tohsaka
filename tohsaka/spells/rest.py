@@ -33,5 +33,5 @@ class Spell(BaseSpell):
         if r.status_code == 200:
             yield r.json()
         else:
-            logger.warning('Failed to fetch %s with error code %d' % (endpoint, r.status_code))
+            logger.warning(f'Failed to fetch {endpoint} with error code {r.status_code}')
             yield None

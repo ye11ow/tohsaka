@@ -33,8 +33,8 @@ def show_mystic_code(mystic_code):
     mystic_json = Tohsaka.load_mystic_code(mystic_code)
     params = mystic_json.get('params', {})
 
-    click.echo('%s - %s' % (mystic_json.get('name'), mystic_json.get('description')))
-    click.echo('Parameters (%d):' % len(params.keys()))
+    click.echo(f'{mystic_json.get("name")} - {mystic_json.get("description")}')
+    click.echo(f'Parameters ({len(params.keys())}):')
     for key, value in params.items():
         required = value.get('required')
         if required:
@@ -44,7 +44,7 @@ def show_mystic_code(mystic_code):
 
         description = value.get('description')
         if value.get('default'):
-            description += '. Default: %s' % value.get('default')
+            description += f'. Default: value.get("default")'
 
         click.echo(PARAM_FORMAT.format(name, description))
 
@@ -94,7 +94,7 @@ def run(mystic_code, log, save):
 
             description = value.get('description')
             if value.get('default'):
-                description += '. (Default: %s)' % value.get('default')
+                description += f'. (Default: {value.get("default")})'
 
             result = input(PARAM_INPUT_FORMAT.format(name, description))
 
@@ -111,7 +111,7 @@ def run(mystic_code, log, save):
     tohsaka.go()
 
     if isinstance(save, str):
-        click.echo('Saving the config to %s...' % (save))
+        click.echo(f'Saving the config to {save}...')
         click.echo('All set.\n')
 
         with open(save, 'w') as json_file:

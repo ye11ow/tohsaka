@@ -74,11 +74,11 @@ class Outputter(BaseOutputter):
                 removed_count +=1
 
         if removed_count > 0:
-            logger.info('Removing %d obsolete cache', removed_count)
+            logger.info(f'Removing {removed_count} obsolete cache', )
 
     def _output(self):
         filename = os.path.join(self.output_folder, self.file)
-        logger.info('Output to file %s. Total items %d, filtered %d', filename, self.item_count, self.filtered_count)
+        logger.info(f'Output to file {filename}. Total items {self.item_count}, filtered {self.filtered_count}')
         self.fg.atom_file(filename)
 
         if self.cache:
