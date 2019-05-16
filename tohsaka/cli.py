@@ -69,9 +69,13 @@ def load(profile, log):
 
 @cli.command()
 @click.argument('mystic_code')
+@click.option('--log', default=False, help='the path of the log file')
 @click.option('--save', default=False, help='save the config')
-def run(mystic_code, save):
-    log_util.set_std_logger()
+def run(mystic_code, log, save):
+    if log:
+        log_util.set_file_logger(log)
+    else:
+        log_util.set_std_logger()
 
     """Run a Mystic Code"""
     mystic_json = Tohsaka.load_mystic_code(mystic_code)
