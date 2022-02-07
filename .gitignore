@@ -4,6 +4,7 @@ tohsaka.log
 **/*.pyc
 .coverage
 htmlcov/*
+**/__pycache__
 tohsaka/mystic/**/*.*
 tohsaka/output/**/*.*
 tohsaka/tohsaka.egg-info
