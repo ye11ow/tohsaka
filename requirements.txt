@@ -4,7 +4,7 @@ feedgen == 0.7.0
 pytz == 2019.1
 coverage == 4.5.3
 pytest-cov == 2.7.1
-requests == 2.22.0
+requests == 2.31.0
 coveralls == 1.7.0
 click == 7.0
 jsonpath-ng ==1.5.3
